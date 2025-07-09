@@ -1,0 +1,66 @@
+!-=-=-
+! mmsic2a_kz: MMS IC Damping Observation: Anisotropic Ion Temp
+! Input for IC Damping/Growth : Alfven mode only
+! Running with low_n=.true. (recompile PLUME as needed)
+!=-=-=
+!Input file for PLUME dispersion solver
+!Calculating bi-Maxwellian Dispersion Relations for 
+&params
+betap=1.0
+kperp=1.E-2
+kpar= 1.E-2
+vtp=0.0001
+nspec=2
+nscan=1
+option=1
+nroot_max=1
+use_map=.false.
+writeOut=.true.
+dataName='lmfpc'
+outputName='lmfpc_b1_kperp001_mime1836'
+/
+
+&species_1
+tauS=1.0
+muS=1.0
+alphS=1.0
+Qs=1.0
+Ds=1.0
+vvS=0.0
+/
+
+&species_2
+tauS=1.0
+muS=1836.
+alphS=1.0
+Qs=-1.0
+Ds=1.
+vvS=0.0
+/
+
+&maps
+loggridw=.false.	
+loggridg=.false.
+omi     = -6.E-3
+omf     = 6.E-3
+gami    =-1.E-3
+gamf    =1.E-4
+positive_roots=.true.
+/
+
+&scan_input_1
+scan_type=1   !kpar
+scan_style=0  !Global param scan
+swi=1.E-2
+swf=1.E1
+swlog=.true.
+ns=600
+nres=16
+heating=.true.
+eigen=.true.
+/
+
+&guess_1
+g_om=1.E-02 
+g_gam=-1.E-08
+/
