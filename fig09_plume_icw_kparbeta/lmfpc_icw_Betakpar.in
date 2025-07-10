@@ -1,0 +1,91 @@
+!-=-=-
+!=-=-=
+!Test input file for PLUME dispersion solver
+&params
+betap=1.00
+kperp=1.E-2
+kpar=1.E-2
+vtp=1.E-4
+nspec=2
+nscan=2
+option=2
+nroot_max=1
+use_map=.false. 
+low_n=.true. !toggle on low-n susceptibility
+new_low_n=.true. !Flag to use Revised low_n for LD/TTD separation
+!enable or suppress output to STD_OUT
+writeOut=.true.
+!Subdirectory (below PLUME/data/) where outputs will be writted
+dataName='lmfpc'
+!Name to be included in output files.
+outputName='lmfpc_icw_BetaKpar'
+/
+
+!The reference component
+&species_1
+tauS=1.0
+muS=1.0
+alphS=1.0
+Qs=1.0
+Ds=1.0
+vvS=0.0
+/
+
+!The second component
+&species_2
+tauS=1.0 !T_par,ref/T_par,s
+muS=1836.0 !m_ref/m_s
+alphS=1.00 !T_perp/T_par|s
+Qs=-1.0 !q_ref/q_s
+Ds=1.0 !n_s/n_ref
+vvS=0.0 !v_s,drift/v_A,ref
+/
+
+&maps
+loggridw=.false. 
+loggridg=.false.
+omi     = -6.E-3
+omf     = 6.E-3
+gami    = -1.E-3
+gamf    = 1.E-4
+positive_roots = .true.
+/
+
+!parameter scan namelist
+&scan_input_1
+scan_type=2 !betap
+scan_style=0 !global
+swi=1e-1
+swf=10.
+swlog=.true.
+ns=128
+nres=4
+heating=.true.
+eigen=.true.
+tensor=.false.
+/
+
+&scan_input_2
+scan_type=1 !kpar rho_ref
+scan_style=0 !global
+swi=0.0316227766016838
+swf=31.622776601683796
+swlog=.true.
+ns=128
+nres=4
+heating=.true.
+eigen=.true.
+tensor=.false.
+/
+
+!intial guess, to be used if use_map=.false.
+&guess_1
+g_om=1.E-02
+g_gam=-1.E-08
+/
+
+!intial guess, to be used if use_map=.false.
+&guess_2
+g_om=1.4E-03
+g_gam=-1.E-3
+/
