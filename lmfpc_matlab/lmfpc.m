@@ -13,7 +13,7 @@
 %   E~ = E / (v_ti * B0 / c)
 %   B~ = B / (v_ti * B0 / c)
 %   vtp = v_ti / c = 1E-4
-% To apply PLUME outputs to this iSH SPM Solver
+% To apply PLUME outputs to this SPM Solver
 %   Use E~ directly
 %   B' = B~ * (v_ti / c)
 % Numerical Method choices 
@@ -30,11 +30,8 @@ format long
 disp('=======================================================================');
 
 % Key parameters to define Plasma and turbulence
-[q, m, mime, tite, bi, be, vtic, field_choice, em_eps, waveT, t_init, filename, delta_phi, kpardi] = set_params;
-field_choice;
-em_eps;
-waveT;
-t_init;
+[q, m, mime, tite, bi, be, vtic, field_choice, em_eps, waveT, t_init, delta_phi, kpardi] = set_params;
+
 
 % Setting Position to Compute f(vx,vy)----------------------
 % Set x limits
@@ -243,14 +240,6 @@ if save_mat_data
 end
 
 h10 = figure('Position', [1, 1, 1400, 700], 'Visible','on');
-% Check if the version is R2023a or earlier
-if strcmp(matlab_version, '2023a') || (str2double(matlab_version(1:4)) < 2023)
-	% disp('This is MATLAB R2023a or an earlier version.');
-	% Continue
-else
-	% disp('This is MATLAB later than R2023a.');
-	h10.Theme = 'Light';
-end
 [~, h] = contourf(VZ, VPERP, tmpf, 50);
 hold on;
 xline(1.135, 'LineStyle','--', ...

@@ -1,4 +1,5 @@
-function [q, m, mime, tite, bi, be, vtic, field_choice, em_eps, waveT, t_init, filename, delta_phi, kvalue] = set_params
+function [q, m, mime, tite, bi, be, vtic, field_choice, em_eps, waveT, t_init, delta_phi, kvalue] = set_params
+% [q, m, mime, tite, bi, be, vtic, field_choice, em_eps, waveT, t_init, filename, delta_phi, kvalue] = set_params
 % Set Plasma Parameters for iSH
 %  set_params sets the charge and mass needed by the Lorentz Force Law
 %  and the dimensionless plasma parameters
@@ -18,83 +19,99 @@ vtic = 1.e-4;
 % RSR
 em_eps = 0.02;
 
+% Set field parameters
 field_choice = -653;
 
 delta_phi = 0. * pi / 4.;
 
-filename = "eigenMode.mat";
+% filename = "eigenMode.mat";
 
 % Wave period
 switch field_choice
     % ============= KAWs ================
     case {-41, -45, -47, -451}
         bi = 1.;
+        be = bi * mime / tite;
         waveT = 110.72;
         kvalue = 0.05;
     case {-49, -491}
         bi = 1.;
+        be = bi * mime / tite;
         waveT = 110.72;
         kvalue = -0.05;
     case {-495, -4951}
         bi = 1.;
+        be = bi * mime / tite;
         waveT = 110.72;
         kvalue = [-0.05, 0.05];
     case -43
         bi = 1.;
+        be = bi * mime / tite;
         waveT = 55.61;
         kvalue = 0.1;
     % ============= ICWs ================
     case {-51, -53, -511}
         bi = 1.;
+        be = bi * mime / tite;
         waveT = 20.1657;
         kvalue = 0.8;
     case -55
         bi = 1.;
+        be = bi * mime / tite;
         waveT = 25.78599;
         kvalue = 0.4;
     case -59
         bi = 1.;
+        be = bi * mime / tite;
         waveT = 22.44201;
         kvalue = 0.6;
     case -61
         bi = 1.;
+        be = bi * mime / tite;
         waveT = 23.94790;
         kvalue = 0.5;
     case {-63, -6300}
         bi = 1.;
+        be = bi * mime / tite;
         waveT = 23.57534;
         kvalue = 0.525;
     case -65
         bi = 1.;
+        be = bi * mime / tite;
         waveT = 23.57534;
         kvalue = -0.525;
     case {-653, -6531, -6532, -6533}
         bi = 1.;
+        be = bi * mime / tite;
         waveT = 23.57534;
         kvalue = [-0.525, 0.525];
     case -6301
         bi = 0.1;
+        be = bi * mime / tite;
         waveT = 10.61342774;
         kvalue = 0.525;
     case -6303
         bi = 0.3;
+        be = bi * mime / tite;
         waveT = 14.52614851;
         kvalue = 0.525;        
     case -633
         bi = 3.;
+        be = bi * mime / tite;
         waveT = 41.67231726;
         kvalue = 0.525;         
     case -6310
         bi = 10.;
+        be = bi * mime / tite;
         waveT = 90.66208508;
         kvalue = 0.525; 
 end
 
+% Set LM parameters
+
 % Physical Initial Time
 t_init = - 4. * waveT;
 
-% Plasma beta_i and beta_e
-be = bi * mime / tite;
 
 % EM field choice
 % -35: ExB Drift Fields

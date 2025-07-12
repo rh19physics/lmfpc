@@ -20,10 +20,14 @@ function dy = lorentz4(t,y)
   % persistent q m mime tite bi be vtic field_choice em_eps waveT t_init filename
 
   % if isempty(initialized)
-    [q, m, mime, tite, bi, be, vtic, field_choice, em_eps, waveT, t_init, filename] = set_params;
+    % [q, m, mime, tite, bi, be, vtic, field_choice, em_eps, waveT, t_init, delta_phi, kpardi] = set_params;
     % initialized = 1;
   % end
 % t
+
+% Get particle parameters
+[q, m, mime, tite, bi, be, vtic, field_choice, em_eps, waveT, t_init, delta_phi, kpardi] = set_params;
+
 % Get electric and magnetic fields
 E0 = elecfield(t, y(1:3));
 B0 = magfield(t, y(1:3));

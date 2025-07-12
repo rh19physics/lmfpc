@@ -106,10 +106,10 @@ current_time = datetime('now', 'Format', 'yyyyMMdd_HHmmss');
 time_suffix = char(current_time);
 
 save_figure = false; % if true, save figures as png files
-fpcfigure_filename = sprintf('./plots_iSH/iSHCDV21_%s.png', time_suffix);
+fpcfigure_filename = sprintf('./plots/iSHCDV21_%s.png', time_suffix);
 
 save_mat_data = false; % if true, save all workspace 
-mat_data_name = sprintf("./data_iSH/iSHCDV21_%s.mat", time_suffix);
+mat_data_name = sprintf("./data/iSHCDV21_%s.mat", time_suffix);
 
 % pause
 disp("Initiation done.");
