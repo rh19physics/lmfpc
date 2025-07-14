@@ -57,9 +57,9 @@ nx = length(xval);
 % Create Velocity Space Grid (v_ti units)
 
 vlength = 3.;
-nvperp = 3; % Number of sampled points along vperp axis
+nvperp = 9; % Number of sampled points along vperp axis
 ntheta = 1; % Number of sampled theta
-nvz = 3; % Number of sampled points along vz axis
+nvz = 62; % Number of sampled points along vz axis
 
 % Compute vmin_perp, vmax_perp, dv_perp
 dv_perp = vlength / nvperp;
