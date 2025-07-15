@@ -4,110 +4,79 @@ clc
 
 format long
 
-datapath = "../lmfpc_matlab/data/iSHLDV12_20250317_185835.mat";
 save_plot = true;
 save_vecplot = true;
 keep_anno = false;
+figure_label = ["(a)", "(b)"];
+% figure_label = ["(c)", "(d)"];
+% figure_label = ["(e)", "(f)"];
 
-output_reversal_time = false;
-input_vz = 1.25;
-num_to_label = 5;
+load("../lmfpc_matlab/data/iSHLDV12_20250317_185835.mat");
+% load("../lmfpc_matlab/data/iSHLDV12_20250417_103327.mat");
+% load("../lmfpc_matlab/data/iSHLDV12_20250417_104902.mat");
 
+% Re-calculate time average
+avg_cez_PerpPar = sum(cez_PerpPar(:, :, :, :, 1:end-1), 5) * dt_final / (t_final(end) - t_final(1));
+tmpf = squeeze(avg_cez_PerpPar);
 
-        % load('~/Desktop/iSHLDV12_20241126_173804.mat');
-        load(datapath);
-        if exist("delta_phi") == 0
-            delta_phi = 0.;
-        end
+h10 = figure('Position', [100, 200, 1000, 800], "Visible", "off");
 
-        [~, ~, ~, ~, ~, ~, ~, field_choice_local, ~, ~, ~, delta_phi_local, kpardi] = set_params;
+% Define manual positions: [left, bottom, width, height]
+top_pos = [0.13, 0.43, 0.72, 0.48];   % top panel (larger height)
+bot_pos = [0.13, 0.17, 0.72, 0.2];   % bottom panel
 
-        if field_choice == -495 || field_choice == -4951
-            if field_choice_local == field_choice && delta_phi == delta_phi_local
-                disp("Correct local field.");
-            else
-                disp("Wrong local field. Please press Ctrl+C.");
-                pause;
-            end
-        else
-            if field_choice_local == field_choice
-                disp("Correct local field.");
-            else
-                disp("Wrong local field. Please press Ctrl+C.");
-                pause;
-            end
-        end
-        if exist("yval") 
-        else
-            yval = xval;
-            zval = xval;
-        end
+% Top axes
+ax1 = axes('Position', top_pos);
+[~, h] = contourf(VZ, VPERP, tmpf, 50);
+hold on;
+xline(1.135, 'LineStyle','--', 'LineWidth', 3);
+xline(-1.135, 'LineStyle','--', 'LineWidth', 3);
 
-        avg_cez_PerpPar = sum(cez_PerpPar(:, :, :, :, 1:end-1), 5) * dt_final / (t_final(end) - t_final(1));
-        tmpf = squeeze(avg_cez_PerpPar);
+xlim([min(vz_values), max(vz_values)]);
 
-        h10 = figure('Position', [100, 200, 1000, 800], "Theme", "Light", "Visible", "off");
+set(h,'edgecolor','none');
+set(ax1, 'FontSize',24, 'FontName','TimesNewRoman', 'LineWidth',2, ...
+'XTickLabel', []);  % hide x-tick labels on top panel
 
-        % Define manual positions: [left, bottom, width, height]
-        top_pos = [0.13, 0.43, 0.72, 0.48];   % top panel (larger height)
-        bot_pos = [0.13, 0.17, 0.72, 0.2];   % bottom panel
+text(-3, 3*0.97, figure_label(1), ...
+    'Interpreter','latex', 'VerticalAlignment','top', FontSize=32);
 
-        % Top axes
-        ax1 = axes('Position', top_pos);
-        [~, h] = contourf(VZ, VPERP, tmpf, 50);
-        hold on;
-        xline(1.135, 'LineStyle','--', ...
-            'LineWidth', 3);
-        xline(-1.135, 'LineStyle','--', 'LineWidth', 3);
-
-        xlim([min(vz_values), max(vz_values)]);
-        
-        set(h,'edgecolor','none');
-        set(ax1, 'FontSize',24, 'FontName','TimesNewRoman', 'LineWidth',2, ...
-    'XTickLabel', []);  % hide x-tick labels on top panel
-        % set(gca, 'Color', 'white', 'Gridcolor', 'black');
-        % set(gcf, 'Color', 'white');
-        % colorbar('FontSize',16,'FontName','TimesNewRoman');
-
-        text(-3, 3*0.97, "(e)", ...
-            'Interpreter','latex', 'VerticalAlignment','top', FontSize=32);
-
-        switch (field_choice)
-            case -45
-                first_line = "$C_{E_z}(v_\parallel, v_\perp)$ with 1-KAW and $k_\parallel > 0$";
-                second_line = sprintf("No Window Function, $(x, y, z) = (%3.2f, %3.2f, %3.2f)$", xval, yval, zval);
-            case -451
-                first_line = "$C_{E_z}(v_\parallel, v_\perp)$ with 1-KAW and $k_\parallel > 0$";
-                second_line = sprintf("Window Function, $(x, y, z) = (%3.2f, %3.2f, %3.2f)$", xval, yval, zval);
-            case -49
-                first_line = "$C_{E_z}(v_\parallel, v_\perp)$ with 1-KAW and $k_\parallel < 0$";
-                second_line = sprintf("No Window Function, $(x, y, z) = (%3.2f, %3.2f, %3.2f)$", xval, yval, zval);
-            case -491
-                first_line = "$C_{E_z}(v_\parallel, v_\perp)$ with 1-KAW and $k_\parallel < 0$";
-                second_line = sprintf("Window Function, $(x, y, z) = (%3.2f, %3.2f, %3.2f)$", xval, yval, zval);
-            case -495
-                first_line = "$C_{E_z}(v_\parallel, v_\perp)$ with 2-KAW";
-                second_line = sprintf("No Window Function, $(x, y, z) = (%3.2f, %3.2f, %3.2f)$", xval, yval, zval);
-            case -4951
-                first_line = "$C_{E_z}(v_\parallel, v_\perp)$ with 2-KAW";
-                second_line = sprintf("Window Function, $(x, y, z) = (%3.2f, %3.2f, %3.2f)$", xval, yval, zval);
-        end
-
-        switch (field_choice)
-            case {-491, -49, -451, -45}
-                third_line = sprintf("Settings: $RSR = %3.2f, k_\\parallel \\rho_i = %4.3f, k_\\perp \\rho_i = 1, \\delta \\phi = %3.2f \\pi$", ...
-                    em_eps, kpardi, delta_phi/pi);
-            case {-495, -4951} % 2-KAWs, -495: no window; -4951: with window
-                third_line = sprintf("Settings: $RSR = %3.2f, k_{\\parallel, 1} \\rho_i = %4.3f, k_{\\parallel, 2} \\rho_i = %4.3f, k_\\perp \\rho_i = 1, \\delta \\phi = %3.2f \\pi$", ...
-                    em_eps, kpardi(1), kpardi(2), delta_phi/pi);
-        end
-        fourth_line = sprintf('$t_i = %.0f T, t_f = (%.0f, %4.3f T; %4.3f T), (n_{v_\\perp}, n_{\\theta}, n_{v_z}) = (%1.1d, %1.1d, %1.1d)$', ...
-            t_init/waveT, t_final(1), t_final(end-1)/waveT, dt_final/waveT, nvperp, ntheta, nvz);
-
-        if keep_anno
-        text(-3, 3, {[first_line], [second_line], [third_line], [fourth_line]}, ...
-            'Interpreter','latex', 'VerticalAlignment','top', FontSize=15);
-        end
+        % switch (field_choice)
+        %     case -45
+        %         first_line = "$C_{E_z}(v_\parallel, v_\perp)$ with 1-KAW and $k_\parallel > 0$";
+        %         second_line = sprintf("No Window Function, $(x, y, z) = (%3.2f, %3.2f, %3.2f)$", xval, yval, zval);
+        %     case -451
+        %         first_line = "$C_{E_z}(v_\parallel, v_\perp)$ with 1-KAW and $k_\parallel > 0$";
+        %         second_line = sprintf("Window Function, $(x, y, z) = (%3.2f, %3.2f, %3.2f)$", xval, yval, zval);
+        %     case -49
+        %         first_line = "$C_{E_z}(v_\parallel, v_\perp)$ with 1-KAW and $k_\parallel < 0$";
+        %         second_line = sprintf("No Window Function, $(x, y, z) = (%3.2f, %3.2f, %3.2f)$", xval, yval, zval);
+        %     case -491
+        %         first_line = "$C_{E_z}(v_\parallel, v_\perp)$ with 1-KAW and $k_\parallel < 0$";
+        %         second_line = sprintf("Window Function, $(x, y, z) = (%3.2f, %3.2f, %3.2f)$", xval, yval, zval);
+        %     case -495
+        %         first_line = "$C_{E_z}(v_\parallel, v_\perp)$ with 2-KAW";
+        %         second_line = sprintf("No Window Function, $(x, y, z) = (%3.2f, %3.2f, %3.2f)$", xval, yval, zval);
+        %     case -4951
+        %         first_line = "$C_{E_z}(v_\parallel, v_\perp)$ with 2-KAW";
+        %         second_line = sprintf("Window Function, $(x, y, z) = (%3.2f, %3.2f, %3.2f)$", xval, yval, zval);
+        % end
+        % 
+        % switch (field_choice)
+        %     case {-491, -49, -451, -45}
+        %         third_line = sprintf("Settings: $RSR = %3.2f, k_\\parallel \\rho_i = %4.3f, k_\\perp \\rho_i = 1, \\delta \\phi = %3.2f \\pi$", ...
+        %             em_eps, kpardi, delta_phi/pi);
+        %     case {-495, -4951} % 2-KAWs, -495: no window; -4951: with window
+        %         third_line = sprintf("Settings: $RSR = %3.2f, k_{\\parallel, 1} \\rho_i = %4.3f, k_{\\parallel, 2} \\rho_i = %4.3f, k_\\perp \\rho_i = 1, \\delta \\phi = %3.2f \\pi$", ...
+        %             em_eps, kpardi(1), kpardi(2), delta_phi/pi);
+        % end
+        % fourth_line = sprintf('$t_i = %.0f T, t_f = (%.0f, %4.3f T; %4.3f T), (n_{v_\\perp}, n_{\\theta}, n_{v_z}) = (%1.1d, %1.1d, %1.1d)$', ...
+        %     t_init/waveT, t_final(1), t_final(end-1)/waveT, dt_final/waveT, nvperp, ntheta, nvz);
+        % 
+        % if keep_anno
+        % text(-3, 3, {[first_line], [second_line], [third_line], [fourth_line]}, ...
+        %     'Interpreter','latex', 'VerticalAlignment','top', FontSize=15);
+        % end
 
         title("$C_{E_z}(v_\parallel, v_\perp)$", ...
             'Interpreter','latex', ...
@@ -155,7 +124,7 @@ num_to_label = 5;
 
         hold on;
 
-        text(-3, max(tmpf_1DCez)*0.97, "(f)", ...
+        text(-3, max(tmpf_1DCez)*0.97, figure_label(2), ...
             'Interpreter','latex', 'VerticalAlignment','top', FontSize=32);
 
         % plot(1.1131, 0., '.', 'MarkerSize', 40, 'Color','Black');
