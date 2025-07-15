@@ -77,7 +77,7 @@ vmax_z = vlength + dv_z / 2.;
 % Set up (vperp, theta, vz) grid
 vperp_values = (vmin_perp:dv_perp:vmax_perp)
 % theta_values = (0+dtheta:dtheta:2.*pi)
-theta_values = pi / 2.
+theta_values = 2. * pi
 vz_values = (vmin_z:dv_z:vmax_z)
 
 nvperp = length(vperp_values);
