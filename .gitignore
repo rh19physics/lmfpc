@@ -2,3 +2,5 @@
 *.asv
 .DS_Store
 z_testings/
+lmfpc_matlab/data/
+lmfpc_matlab/plots/
