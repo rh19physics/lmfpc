@@ -6,14 +6,21 @@ format long
 
 save_plot = true;
 save_vecplot = true;
-keep_anno = false;
-figure_label = ["(a)", "(b)"];
-% figure_label = ["(c)", "(d)"];
-% figure_label = ["(e)", "(f)"];
+keep_anno = true;
 
-load("../lmfpc_matlab/data/iSHLDV12_20250317_185835.mat");
-% load("../lmfpc_matlab/data/iSHLDV12_20250417_103327.mat");
-% load("../lmfpc_matlab/data/iSHLDV12_20250417_104902.mat");
+figure_number = 3;
+
+switch(figure_number)
+    case 1
+        figure_label = ["(a)", "(b)"];
+        load("../lmfpc_matlab/data/iSHLDV12_20250317_185835.mat");
+    case 2
+        figure_label = ["(c)", "(d)"];
+        load("../lmfpc_matlab/data/iSHLDV12_20250417_103327.mat");
+    case 3
+        figure_label = ["(e)", "(f)"];
+        load("../lmfpc_matlab/data/iSHLDV12_20250417_104902.mat");
+end
 
 % Re-calculate time average
 avg_cez_PerpPar = sum(cez_PerpPar(:, :, :, :, 1:end-1), 5) * dt_final / (t_final(end) - t_final(1));
@@ -36,81 +43,52 @@ xlim([min(vz_values), max(vz_values)]);
 
 set(h,'edgecolor','none');
 set(ax1, 'FontSize',24, 'FontName','TimesNewRoman', 'LineWidth',2, ...
-'XTickLabel', []);  % hide x-tick labels on top panel
+    'XTickLabel', []);  % hide x-tick labels on top panel
 
 text(-3, 3*0.97, figure_label(1), ...
     'Interpreter','latex', 'VerticalAlignment','top', FontSize=32);
 
-        % switch (field_choice)
-        %     case -45
-        %         first_line = "$C_{E_z}(v_\parallel, v_\perp)$ with 1-KAW and $k_\parallel > 0$";
-        %         second_line = sprintf("No Window Function, $(x, y, z) = (%3.2f, %3.2f, %3.2f)$", xval, yval, zval);
-        %     case -451
-        %         first_line = "$C_{E_z}(v_\parallel, v_\perp)$ with 1-KAW and $k_\parallel > 0$";
-        %         second_line = sprintf("Window Function, $(x, y, z) = (%3.2f, %3.2f, %3.2f)$", xval, yval, zval);
-        %     case -49
-        %         first_line = "$C_{E_z}(v_\parallel, v_\perp)$ with 1-KAW and $k_\parallel < 0$";
-        %         second_line = sprintf("No Window Function, $(x, y, z) = (%3.2f, %3.2f, %3.2f)$", xval, yval, zval);
-        %     case -491
-        %         first_line = "$C_{E_z}(v_\parallel, v_\perp)$ with 1-KAW and $k_\parallel < 0$";
-        %         second_line = sprintf("Window Function, $(x, y, z) = (%3.2f, %3.2f, %3.2f)$", xval, yval, zval);
-        %     case -495
-        %         first_line = "$C_{E_z}(v_\parallel, v_\perp)$ with 2-KAW";
-        %         second_line = sprintf("No Window Function, $(x, y, z) = (%3.2f, %3.2f, %3.2f)$", xval, yval, zval);
-        %     case -4951
-        %         first_line = "$C_{E_z}(v_\parallel, v_\perp)$ with 2-KAW";
-        %         second_line = sprintf("Window Function, $(x, y, z) = (%3.2f, %3.2f, %3.2f)$", xval, yval, zval);
-        % end
-        % 
-        % switch (field_choice)
-        %     case {-491, -49, -451, -45}
-        %         third_line = sprintf("Settings: $RSR = %3.2f, k_\\parallel \\rho_i = %4.3f, k_\\perp \\rho_i = 1, \\delta \\phi = %3.2f \\pi$", ...
-        %             em_eps, kpardi, delta_phi/pi);
-        %     case {-495, -4951} % 2-KAWs, -495: no window; -4951: with window
-        %         third_line = sprintf("Settings: $RSR = %3.2f, k_{\\parallel, 1} \\rho_i = %4.3f, k_{\\parallel, 2} \\rho_i = %4.3f, k_\\perp \\rho_i = 1, \\delta \\phi = %3.2f \\pi$", ...
-        %             em_eps, kpardi(1), kpardi(2), delta_phi/pi);
-        % end
-        % fourth_line = sprintf('$t_i = %.0f T, t_f = (%.0f, %4.3f T; %4.3f T), (n_{v_\\perp}, n_{\\theta}, n_{v_z}) = (%1.1d, %1.1d, %1.1d)$', ...
-        %     t_init/waveT, t_final(1), t_final(end-1)/waveT, dt_final/waveT, nvperp, ntheta, nvz);
-        % 
-        % if keep_anno
-        % text(-3, 3, {[first_line], [second_line], [third_line], [fourth_line]}, ...
-        %     'Interpreter','latex', 'VerticalAlignment','top', FontSize=15);
-        % end
+% Annotations
+first_line = sprintf("Field Choice: %d, $(x, y, z) = (%3.2f, %3.2f, %3.2f)$", field_choice, xval, yval, zval);
+if size(kpardi, 2) == 1
+    second_line = sprintf("Settings: $RSR = %3.2f, k_\\parallel \\rho_i = %4.3f, k_\\perp \\rho_i = 1, \\delta \\phi = %3.2f \\pi$", ...
+        em_eps, kpardi, delta_phi/pi);
+else
+    second_line = sprintf("Settings: $RSR = %3.2f, k_{\\parallel, 1} \\rho_i = %4.3f, k_{\\parallel, 2} \\rho_i = %4.3f, k_\\perp \\rho_i = 1, \\delta \\phi = %3.2f \\pi$", ...
+                    em_eps, kpardi(1), kpardi(2), delta_phi/pi);
+end
 
-        title("$C_{E_z}(v_\parallel, v_\perp)$", ...
-            'Interpreter','latex', ...
-            'FontName','TimesNewRoman', ...
-            'FontSize', 32, ...
-            'FontWeight','bold');
-        % title({[first_line], ...
-        %     [second_line]},'Interpreter','latex', ...
-        %     'FontName','TimesNewRoman', ...
-        %     'FontSize',16, ...
-        %     'FontWeight','bold');
-        
-        % xlabel('$v_\parallel/v_{ti}$','Interpreter','latex', ...
-        %     'FontName','TimesNewRoman', ...
-        %     'FontSize',24, ...
-        %     'FontWeight','bold');
-        
-        ylabel('$v_\perp/v_{ti}$','Interpreter','latex', ...
-            'FontName','TimesNewRoman', ...
-            'FontSize',32, ...
-            'FontWeight','bold'); 
+third_line = sprintf('$t_i = %.0f T, t_f = (%.0f, %4.3f T; %4.3f T), (n_{v_\\perp}, n_{\\theta}, n_{v_z}) = (%1.1d, %1.1d, %1.1d)$', ...
+    t_init/waveT, t_final(1), t_final(end-1)/waveT, dt_final/waveT, nvperp, ntheta, nvz);
 
-        cb = colorbar('FontSize',24,'FontName','TimesNewRoman');
-        cb.Position(1) = 0.85;  % reposition colorbar to match
-        cb.Position(2) = top_pos(2);
-        cb.Position(4) = top_pos(4);  % same height as panel
-        % Sets the colormap limits such that the center of the color bar is 0
-        cL = caxis;  
-        caxis([-max(abs(cL)) max(abs(cL))]); 
-        
-        daspect([1 1 1]);
-        grid on;
-       
-        colormap(bluewhitered);
+if keep_anno
+text(-3, 2, {[first_line], [second_line], [third_line]}, ...
+    'Interpreter','latex', 'VerticalAlignment','top', FontSize=13);
+end
+
+title("$C_{E_z}(v_\parallel, v_\perp)$", ...
+    'Interpreter','latex', ...
+    'FontName','TimesNewRoman', ...
+    'FontSize', 32, ...
+    'FontWeight','bold');
+      
+ylabel('$v_\perp/v_{ti}$','Interpreter','latex', ...
+    'FontName','TimesNewRoman', ...
+    'FontSize',32, ...
+    'FontWeight','bold'); 
+
+cb = colorbar('FontSize',24,'FontName','TimesNewRoman');
+cb.Position(1) = 0.85;  % reposition colorbar to match
+cb.Position(2) = top_pos(2);
+cb.Position(4) = top_pos(4);  % same height as panel
+% Sets the colormap limits such that the center of the color bar is 0
+cL = caxis;  
+caxis([-max(abs(cL)) max(abs(cL))]); 
+
+daspect([1 1 1]);
+grid on;
+
+colormap(bluewhitered);
 
         % Bottom axes
         ax2 = axes('Position', bot_pos);
