@@ -32,12 +32,6 @@ disp("You've started lmfpc_ld_gyro.");
 % This version only calculates f, df/dz, cez
 % This version starts with vperp and theta grids.
 
-% Get the MATLAB version string
-matlab_version = version('-release'); % Returns '2023a', '2022b', etc.
-
-% Display the version
-% fprintf('MATLAB Version: %s\n', matlab_version);
-
 % Key parameters to define Plasma and turbulence
 [q, m, mime, tite, bi, be, vtic, field_choice, em_eps, waveT, t_init, filename, delta_phi, kpardi] = set_params;
 field_choice;
@@ -252,14 +246,6 @@ if save_mat_data
 end
 
 h10 = figure('Position', [1, 1, 1400, 700], 'Visible','on');
-% Check if the version is R2023a or earlier
-if strcmp(matlab_version, '2023a') || (str2double(matlab_version(1:4)) < 2023)
-	% disp('This is MATLAB R2023a or an earlier version.');
-	% Continue
-else
-	% disp('This is MATLAB later than R2023a.');
-	h10.Theme = 'Light';
-end
 [~, h] = contourf(VZ, VPERP, tmpf, 50);
 hold on;
 xline(1.135, 'LineStyle','--', ...
