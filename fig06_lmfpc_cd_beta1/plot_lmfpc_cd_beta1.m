@@ -1,10 +1,19 @@
-% This script reads iSHCDV21 data and calculate FPC quantities
+% This script reads iSHCDV21 data and re-calculate FPC quantities
+% The FPC re-calculation process requires electric field. 
+% So it's important to cross check the local electric field and the
+% electric field used in LM
+% So seriously what are the quantities I need to check?
+% I think I need to check all the quantities...
 % To reproduce figures in the paper, choose plotting_option = 2
+
 close all
 clear
 clc
 
 save_figure = true;
+plotting_option = 2; % if 1, plot using subplot; if 2, plot using tilelayout
+% if 0 or negative numbers, plot whatever you like
+% -1: plot it in 3D
 
 figure_number = 1;
 
@@ -14,25 +23,20 @@ switch(figure_number)
         load("../lmfpc_matlab/data/iSHCDV21_20241117_185132.mat");
     case 2
         anno_labels = ["$(e)$", "$(f)$", "$(g)$", "$(h)$"];
-        load("../lmfpc_matlab/data/iSHCDV21_20241117_185132.mat");
+        load("../lmfpc_matlab/data/iSHCDV21_20241117_185002.mat");
     case 3
         anno_labels = ["$(i)$", "$(j)$", "$(k)$", "$(l)$"];
-        load("../lmfpc_matlab/data/iSHCDV21_20241117_185132.mat");
+        load("../lmfpc_matlab/data/iSHCDV21_20241118_131107.mat");
 end
 
 keep_anno = false;
 output_gif = false;
 plot_logf = true;
 logdyn = 6;
-plotting_option = 2; % if 1, plot using subplot; if 2, plot using tilelayout
-% if 0 or negative numbers, plot whatever you like
-% -1: plot it in 3D
 plot_2panels = false;
 vertical_layout = false;
 
-
-
-[~, ~, ~, ~, bi, ~, ~, field_choice_local, ~, ~, t_init_local, delta_phi_local, kpardi] = set_params;
+[q_local, m_local, mime_local, tite_local, bi_local, ~, ~, field_choice_local, ~, ~, t_init_local, delta_phi_local, kpardi] = set_params;
 
 if field_choice_local == field_choice && delta_phi == delta_phi_local && t_init == t_init_local
     disp("Correct local field.");
@@ -47,6 +51,8 @@ else
     chosen_tf_slices = [1, 10, 20, 30];
 end
 
+
+
 if field_choice == -653 || field_choice == -6531
     plot_circs = false;
 else
@@ -57,7 +63,6 @@ end
 % later, I decided to choose 3 different spatial coordinates
 % to make this plotting script compatible to old datasets
 % I have to add:
-
 if exist("yval") 
 else
     yval = xval;
