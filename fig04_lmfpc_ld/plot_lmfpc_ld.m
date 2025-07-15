@@ -5,10 +5,9 @@ clc
 format long
 
 save_plot = true;
-save_vecplot = true;
-keep_anno = true;
+keep_anno = false;
 
-figure_number = 3;
+figure_number = 1;
 
 switch(figure_number)
     case 1
@@ -32,7 +31,7 @@ h10 = figure('Position', [100, 200, 1000, 800], "Visible", "off");
 top_pos = [0.13, 0.43, 0.72, 0.48];   % top panel (larger height)
 bot_pos = [0.13, 0.17, 0.72, 0.2];   % bottom panel
 
-% Top axes
+% Top axes ==================================
 ax1 = axes('Position', top_pos);
 [~, h] = contourf(VZ, VPERP, tmpf, 50);
 hold on;
@@ -90,74 +89,68 @@ grid on;
 
 colormap(bluewhitered);
 
-        % Bottom axes
-        ax2 = axes('Position', bot_pos);
-        tmpf_1DCez = sum(tmpf, 1) * dv_perp;
-        
-        fig = plot(vz_values, tmpf_1DCez, 'LineWidth', 3);
-        set(gca,'FontSize',24, ...
-        'FontName','TimesNewRoman', ...
-        'FontWeight','normal', ...
-        'LineWidth',2)
+% Bottom axes ==================================
+ax2 = axes('Position', bot_pos);
+tmpf_1DCez = sum(tmpf, 1) * dv_perp;
 
-        hold on;
+fig = plot(vz_values, tmpf_1DCez, 'LineWidth', 3);
+set(gca,'FontSize',24, ...
+'FontName','TimesNewRoman', ...
+'FontWeight','normal', ...
+'LineWidth',2)
 
-        text(-3, max(tmpf_1DCez)*0.97, figure_label(2), ...
-            'Interpreter','latex', 'VerticalAlignment','top', FontSize=32);
+hold on;
 
-        % plot(1.1131, 0., '.', 'MarkerSize', 40, 'Color','Black');
-        % plot(1.8850, 0., '.', 'MarkerSize', 40, 'Color','Black');
+text(-3, max(tmpf_1DCez)*0.97, figure_label(2), ...
+    'Interpreter','latex', 'VerticalAlignment','top', FontSize=32);
 
-        xline(1.135, 'LineStyle','--', ...
-            'LineWidth', 3);
-        xline(-1.135, 'LineStyle','--', 'LineWidth', 3);
-        yline(0, 'Color','k', 'LineWidth',2);
 
-        grid on;
-        xlim([min(vz_values), max(vz_values)]);
-        ylim([-max(abs(tmpf_1DCez))*1.1, max(abs(tmpf_1DCez))*1.1]);
-        
-        % title({[first_line], ...
-        %     [second_line]}, ...
-        %     'Interpreter','latex', ...
-        %     'FontName','TimesNewRoman', ...
-        %     'FontSize', 14, ...
-        %     'FontWeight','bold');
+xline(1.135, 'LineStyle','--', ...
+    'LineWidth', 3);
+xline(-1.135, 'LineStyle','--', 'LineWidth', 3);
+yline(0, 'Color','k', 'LineWidth',2);
 
-        xlabel('$v_\parallel/v_{ti}$','Interpreter','latex', ...
-            'FontName', 'TimesNewRoman', ...
-            'FontSize', 32, ...
-            'FontWeight', 'bold');
+grid on;
+xlim([min(vz_values), max(vz_values)]);
+ylim([-max(abs(tmpf_1DCez))*1.1, max(abs(tmpf_1DCez))*1.1]);
 
-        ylabel('$C_{E_z}(v_\parallel)$','Interpreter','latex', ...
-            'FontName', 'TimesNewRoman', ...
-            'FontSize', 32, ...
-            'FontWeight', 'bold');
+xlabel('$v_\parallel/v_{ti}$','Interpreter','latex', ...
+    'FontName', 'TimesNewRoman', ...
+    'FontSize', 32, ...
+    'FontWeight', 'bold');
 
-        % ylabel('$C_{E_z}(v_\parallel) = \int C_{E_z}(v_\parallel, v_\perp) d v_\perp$','Interpreter','latex', ...
-        %     'FontName', 'TimesNewRoman', ...
-        %     'FontSize', 24, ...
-        %     'FontWeight', 'bold');
+ylabel('$C_{E_z}(v_\parallel)$','Interpreter','latex', ...
+    'FontName', 'TimesNewRoman', ...
+    'FontSize', 32, ...
+    'FontWeight', 'bold');
 
-        % Link x-axes
+
+% Link x-axes
 linkaxes([ax1, ax2], 'x');
         
-        if save_plot
-            if save_vecplot
-                % Set paper units to inches (or points, cm, etc.)
-set(h10, 'PaperUnits', 'inches');
-
-% Match the figure size (convert pixels to inches, or set directly)
-fig_width = 8;   % in inches
-fig_height = 6.4;   % in inches
-set(h10, 'PaperSize', [fig_width fig_height]);
-set(h10, 'PaperPosition', [0 0 fig_width fig_height]);
-figure_name = sprintf("iSHLDV12_%s", time_suffix);
-print(h10, figure_name, '-dpdf', '-vector');
-% exportgraphics(h10, figure_name, "ContentType","vector");
-print(h10, figure_name, '-painters','-depsc','-r150');
-            else
-            figure_name = sprintf("iSHLDV12_%s", time_suffix);
-            print(h10, figure_name, '-dpng', '-r150');  % 150 dpi resolution
-            end
-        end
+if save_plot
+    if keep_anno
+        pngname = sprintf("iSHLDV12_%s_anno.png", time_suffix);
+        epsname = sprintf("iSHLDV12_%s_anno.eps", time_suffix);
+        pdfname = sprintf("iSHLDV12_%s_anno.pdf", time_suffix);       
+    else
+        pngname = sprintf("iSHLDV12_%s.png", time_suffix);
+        epsname = sprintf("iSHLDV12_%s.eps", time_suffix);
+        pdfname = sprintf("iSHLDV12_%s.pdf", time_suffix);
+    end
+    
+    % Save png and eps
+    print(h10, pngname, '-dpng', '-r150');  % 150 dpi resolution
+    print(h10, epsname, '-painters','-depsc','-r150');
+    
+    % Save pdf
+    % Set paper units to inches (or points, cm, etc.)
+    set(h10, 'PaperUnits', 'inches');
+    % Match the figure size (convert pixels to inches, or set directly)
+    fig_width = 8;   % in inches
+    fig_height = 6.4;   % in inches
+    set(h10, 'PaperSize', [fig_width fig_height]);
+    set(h10, 'PaperPosition', [0 0 fig_width fig_height]);
+    
+    print(h10, pdfname, '-dpdf', '-vector');    
+end
