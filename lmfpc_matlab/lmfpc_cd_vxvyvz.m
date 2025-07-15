@@ -28,9 +28,9 @@ clc
 % format long
 
 disp('=======================================================================');
-disp("You've started iSH_FPC_Calculator_V2_1_SingleICWCD_VxVy.");
-% This version only calculates f, df/dz, cez
-% This version starts with vperp and theta grids.
+disp("You've started lmfpc_cd_vxvyvz.");
+% This version calculates f, df/dvx, df/dvy, df/dvz, cex, cey, cez
+% This version starts with vx, vy, vz grids.
 
 % Key parameters to define Plasma and turbulence
 [q, m, mime, tite, bi, be, vtic, field_choice, em_eps, waveT, t_init, filename, delta_phi, kvalue] = set_params;

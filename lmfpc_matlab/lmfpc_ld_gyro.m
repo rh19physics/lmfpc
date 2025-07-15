@@ -34,10 +34,6 @@ disp("You've started lmfpc_ld_gyro.");
 
 % Key parameters to define Plasma and turbulence
 [q, m, mime, tite, bi, be, vtic, field_choice, em_eps, waveT, t_init, filename, delta_phi, kpardi] = set_params;
-field_choice;
-em_eps;
-waveT;
-t_init;
 
 % Setting Position to Compute f(vx,vy)----------------------
 % Set x limits
