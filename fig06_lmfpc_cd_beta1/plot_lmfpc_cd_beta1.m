@@ -1,21 +1,36 @@
+% This script reads iSHCDV21 data and calculate FPC quantities
+% To reproduce figures in the paper, choose plotting_option = 2
 close all
 clear
 clc
 
 save_figure = true;
-anno_labels = ["$(m)$", "$(n)$", "$(o)$", "$(p)$"];
+
+figure_number = 1;
+
+switch(figure_number)
+    case 1
+        anno_labels = ["$(a)$", "$(b)$", "$(c)$", "$(d)$"];
+        load("../lmfpc_matlab/data/iSHCDV21_20241117_185132.mat");
+    case 2
+        anno_labels = ["$(e)$", "$(f)$", "$(g)$", "$(h)$"];
+        load("../lmfpc_matlab/data/iSHCDV21_20241117_185132.mat");
+    case 3
+        anno_labels = ["$(i)$", "$(j)$", "$(k)$", "$(l)$"];
+        load("../lmfpc_matlab/data/iSHCDV21_20241117_185132.mat");
+end
+
 keep_anno = false;
 output_gif = false;
 plot_logf = true;
 logdyn = 6;
-layout_format = 2; % if 1, plot using subplot; if 2, plot using tilelayout
+plotting_option = 2; % if 1, plot using subplot; if 2, plot using tilelayout
 % if 0 or negative numbers, plot whatever you like
 % -1: plot it in 3D
 plot_2panels = false;
 vertical_layout = false;
 
-load("../lmfpc_matlab/data/iSHCDV21_20241117_185132.mat");
-% load("~/Desktop/iSHCDV21_20250614_160053.mat");
+
 
 [~, ~, ~, ~, bi, ~, ~, field_choice_local, ~, ~, t_init_local, delta_phi_local, kpardi] = set_params;
 
@@ -295,7 +310,7 @@ else
     n_neg1_mode2 = (2. * pi / waveT + 1.) / kpardi(2);
 end
 
-switch layout_format
+switch plotting_option
     case 2 % Use tilelayout
         scrsz = get(0, "ScreenSize");
     if plot_2panels
