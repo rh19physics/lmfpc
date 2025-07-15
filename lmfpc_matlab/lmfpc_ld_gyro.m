@@ -28,7 +28,7 @@ clc
 format long
 
 disp('=======================================================================');
-disp("You've started iSH_FPC_Calculator_V1_2_SingleKAWLD_VperpTheta.");
+disp("You've started lmfpc_ld_gyro.");
 % This version only calculates f, df/dz, cez
 % This version starts with vperp and theta grids.
 
