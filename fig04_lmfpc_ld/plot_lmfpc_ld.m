@@ -5,7 +5,7 @@ clc
 format long
 
 save_plot = true;
-keep_anno = false;
+keep_anno = true;
 
 figure_number = 1;
 
@@ -130,13 +130,13 @@ linkaxes([ax1, ax2], 'x');
         
 if save_plot
     if keep_anno
-        pngname = sprintf("iSHLDV12_%s_anno.png", time_suffix);
-        epsname = sprintf("iSHLDV12_%s_anno.eps", time_suffix);
-        pdfname = sprintf("iSHLDV12_%s_anno.pdf", time_suffix);       
+        pngname = sprintf("./png/iSHLDV12_%s_anno.png", time_suffix);
+        epsname = sprintf("./eps/iSHLDV12_%s_anno.eps", time_suffix);
+        pdfname = sprintf("./pdf/iSHLDV12_%s_anno.pdf", time_suffix);       
     else
-        pngname = sprintf("iSHLDV12_%s.png", time_suffix);
-        epsname = sprintf("iSHLDV12_%s.eps", time_suffix);
-        pdfname = sprintf("iSHLDV12_%s.pdf", time_suffix);
+        pngname = sprintf("./png/iSHLDV12_%s.png", time_suffix);
+        epsname = sprintf("./eps/iSHLDV12_%s.eps", time_suffix);
+        pdfname = sprintf("./pdf/iSHLDV12_%s.pdf", time_suffix);
     end
     
     % Save png and eps
