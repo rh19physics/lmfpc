@@ -1,4 +1,4 @@
-function [q, m, mime, tite, bi, be, vtic, field_choice, em_eps, waveT, t_init, filename, delta_phi, kvalue] = set_params
+function [q, m, mime, tite, bi, be, vtic, field_choice, em_eps, waveT, t_init, delta_phi, kvalue] = set_params
 % Set Plasma Parameters for iSH
 %  set_params sets the charge and mass needed by the Lorentz Force Law
 %  and the dimensionless plasma parameters
@@ -22,7 +22,7 @@ field_choice = -45;
 
 delta_phi = 0. * pi / 4.;
 
-filename = "eigenMode.mat";
+% filename = "eigenMode.mat";
 
 % Wave period
 switch field_choice

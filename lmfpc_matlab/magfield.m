@@ -10,7 +10,7 @@ function B = magfield(t, x, choice)
   % persistent q m mime tite bi be vtic field_choice em_eps waveT t_init filename
 
   % if isempty(initialized)
-    [q, m, mime, tite, bi, be, vtic, field_choice, em_eps, waveT, t_init, filename, delta_phi] = set_params;
+    [q, m, mime, tite, bi, be, vtic, field_choice, em_eps, waveT, t_init, delta_phi, kvalue] = set_params;
     % initialized = 1;
   % end
 

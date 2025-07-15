@@ -33,7 +33,7 @@ disp("You've started lmfpc_ld_gyro.");
 % This version starts with vperp and theta grids.
 
 % Key parameters to define Plasma and turbulence
-[q, m, mime, tite, bi, be, vtic, field_choice, em_eps, waveT, t_init, filename, delta_phi, kpardi] = set_params;
+[q, m, mime, tite, bi, be, vtic, field_choice, em_eps, waveT, t_init, delta_phi, kvalue] = set_params;
 
 % Setting Position to Compute f(vx,vy)----------------------
 % Set x limits
