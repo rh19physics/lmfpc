@@ -21,6 +21,16 @@ switch(figure_number)
         load("../lmfpc_matlab/data/iSHLDV12_20250417_104902.mat");
 end
 
+% before 2024-11-28 I used xval for x, y, z
+% later, I decided to choose 3 different spatial coordinates
+% to make this plotting script compatible to old datasets
+% I have to add:
+if exist("yval") 
+else
+    yval = xval;
+    zval = xval;
+end
+
 % Re-calculate time average
 avg_cez_PerpPar = sum(cez_PerpPar(:, :, :, :, 1:end-1), 5) * dt_final / (t_final(end) - t_final(1));
 tmpf = squeeze(avg_cez_PerpPar);
