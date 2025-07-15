@@ -4,9 +4,7 @@ clc
 
 format long
 
-data_src = 12; % 12 means data from V1.2, 13 means data from V1.3
-% load("./data_iSH/iSHLDV12_20250427_171656.mat");
-datapath = "./data_iSH/iSHLDV12_20250317_185835.mat";
+datapath = "../lmfpc_matlab/data/iSHLDV12_20250317_185835.mat";
 save_plot = true;
 save_vecplot = true;
 keep_anno = false;
@@ -15,16 +13,14 @@ output_reversal_time = false;
 input_vz = 1.25;
 num_to_label = 5;
 
-switch(data_src)
 
-    case 12
         % load('~/Desktop/iSHLDV12_20241126_173804.mat');
         load(datapath);
         if exist("delta_phi") == 0
             delta_phi = 0.;
         end
 
-        [~, ~, ~, ~, ~, ~, ~, field_choice_local, ~, ~, ~, ~, delta_phi_local, kpardi] = set_params;
+        [~, ~, ~, ~, ~, ~, ~, field_choice_local, ~, ~, ~, delta_phi_local, kpardi] = set_params;
 
         if field_choice == -495 || field_choice == -4951
             if field_choice_local == field_choice && delta_phi == delta_phi_local
@@ -209,225 +205,12 @@ fig_width = 8;   % in inches
 fig_height = 6.4;   % in inches
 set(h10, 'PaperSize', [fig_width fig_height]);
 set(h10, 'PaperPosition', [0 0 fig_width fig_height]);
-figure_name = sprintf("./plots_iSH/iSHLDV12_%s", time_suffix);
-% print(h10, figure_name, '-dpdf', '-vector');
-exportgraphics(h10, figure_name, "ContentType","vector");
+figure_name = sprintf("iSHLDV12_%s", time_suffix);
+print(h10, figure_name, '-dpdf', '-vector');
+% exportgraphics(h10, figure_name, "ContentType","vector");
 print(h10, figure_name, '-painters','-depsc','-r150');
             else
-            figure_name = sprintf("./plots_iSH/iSHLDV12_%s", time_suffix);
+            figure_name = sprintf("iSHLDV12_%s", time_suffix);
             print(h10, figure_name, '-dpng', '-r150');  % 150 dpi resolution
             end
         end
-    case 13
-
-        % load('~/Desktop/iSHLDV132_20241126_173925.mat');
-        load(datapath);
-
-        % if exist("delta_phi") == 0
-        %    delta_phi = 0.;
-        % end
-
-        [~, ~, ~, ~, ~, ~, ~, field_choice_local, ~, ~, ~, ~, delta_phi_local, kpardi] = set_params;
-
-        if field_choice == -495 || field_choice == -4951
-            if field_choice_local == field_choice && delta_phi == delta_phi_local
-                disp("Correct local field.");
-            else
-                disp("Wrong local field. Please press Ctrl+C.");
-                pause;
-            end
-        else
-            if field_choice_local == field_choice
-                disp("Correct local field.");
-            else
-                disp("Wrong local field. Please press Ctrl+C.");
-                pause;
-            end
-        end
-
-        % avg_cez = squeeze(sum(cez(:, :, :, :, :, 1:end-1), 6) * dtau / (tau(end) - tau(1)));
-        
-        avg_cez = squeeze(sum(cez(:, :, :, :, :, 1:end-1), 6) * dtf / (tf_values(end) - tf_values(1)));
-        % Create the meshgrid for plotting
-        [VZ, ti] = meshgrid(vz_values, t_multiples);
-        
-        h10 = figure('Position', [1, 200, 1400, 900], 'Theme', 'Light');
-        
-        % % Check if the version is R2023a or earlier
-        % if strcmp(matlab_version, '2023a') || (str2double(matlab_version(1:4)) < 2023)
-        %     disp('This is MATLAB R2023a or an earlier version.');
-        %     % Continue
-        % else
-        %     disp('This is MATLAB later than R2023a.');
-        %     h10.Theme = 'Light';
-        % end
-        
-        [~, h] = contourf(VZ, ti, avg_cez, 50);
-        hold on;
-        xline(1.135, 'LineStyle','--', 'LineWidth', 3);
-        xline(-1.135, 'LineStyle','--', 'LineWidth', 3);
-        % yline(3, 'LineStyle','--', 'LineWidth', 3);
-        % yline(5, 'LineStyle','--', 'LineWidth', 3);
-        % yline(8, 'LineStyle','--', 'LineWidth', 3);
-        if output_reversal_time
-            xline(input_vz, 'LineStyle','-', 'LineWidth', 1);
-            % Find index of closest value in vz_values
-            [~, closest_index] = min(abs(vz_values - input_vz));
-            
-            % Extract corresponding column from avg_cez
-            avg_cez_1D = avg_cez(:, closest_index);
-            
-            % Define interval (comment this line if no interval is needed)
-            interval = [min(t_multiples), max(t_multiples)];  % or something like [0.2, 0.5]
-            
-            % Call zero-crossing function
-            zero_crossings = find_zero_crossings(t_multiples, avg_cez_1D, interval);
-            
-            % Display results
-            disp('Zero crossings found at:');
-            disp(zero_crossings);
-
-            % Limit to available zero crossings
-            num_to_label = min(num_to_label, length(zero_crossings));
-            % Limit to the number of labeled crossings
-            zc_subset = zero_crossings(1:num_to_label);
-            differences = diff(zc_subset);  % differences between successive elements
-            
-            % --- Step 2: Output the differences ---
-            disp('Differences between adjacent zero crossings:');
-            disp(differences);
-            text(-1, 60, 'Reversal Times:', ...
-                    'VerticalAlignment', 'bottom', ...
-                    'HorizontalAlignment', 'left', ...
-                    'FontSize', 20, 'Color', 'k');
-            disp_diff = flip(differences);
-            for i = 1:length(differences)
-                x = disp_diff(i);
-                text(-0.5, 60-2.2*i, sprintf('%.3f', x), ...
-                    'VerticalAlignment', 'bottom', ...
-                    'HorizontalAlignment', 'left', ...
-                    'FontSize', 20, 'Color', 'k');
-
-            end
-            
-            % --- Step 3: Output the mean of the differences ---
-            mean_diff = mean(differences);
-            fprintf('Mean difference: %.4f\n', mean_diff);
-
-            text(-1, 30, sprintf('Mean Reversal Time: %.3f', mean_diff), ...
-                    'VerticalAlignment', 'bottom', ...
-                    'HorizontalAlignment', 'left', ...
-                    'FontSize', 20, 'Color', 'k');
-            
-            for i = 1:num_to_label
-                x = zero_crossings(i);
-                % Plot vertical dashed line or a point
-                plot(input_vz, x, 'ko', 'MarkerSize', 6, 'LineWidth', 2);  % red marker at zero crossing
-                % Label it
-                text(input_vz, x, sprintf('%.3f', x), ...
-                    'VerticalAlignment', 'bottom', ...
-                    'HorizontalAlignment', 'left', ...
-                    'FontSize', 20, 'Color', 'k');
-            end
-            text(input_vz, 0, sprintf('%.3f', input_vz), ...
-                'VerticalAlignment', 'top', ...
-                'HorizontalAlignment', 'center', ...
-                'FontSize', 15, 'Color', 'k');
-            
-            hold off;
-
-        end
-
-        set(h,'edgecolor','none');
-        set(gca,'FontSize',16, ...
-        'FontName','TimesNewRoman', ...
-        'FontWeight','normal', ...
-        'LineWidth',2)
-        colorbar('FontSize',16,'FontName','TimesNewRoman');
-        
-        % xlim([vzmin - dv / 2, vzmax + dv / 2]);
-        % ylim([min(vperp_values) - dv / 2, max(vperp_values) + dv / 2]);
-        
-        % Sets the colormap limits such that the center of the color bar is 0
-        cL = caxis;  
-        caxis([-max(abs(cL)) max(abs(cL))]); 
-        
-        % daspect([1 1 1]);
-        grid on;
-
-        switch(field_choice)
-            case {-49, -45}
-                first_line = sprintf("$C_{E_z}(v_\\parallel, |t_i|)$, No Window Function, 1-KAW, $k_{\\parallel} \\rho_i = %4.3f$", ...
-                    kpardi);
-            case {-491, -451}
-                first_line = sprintf("$C_{E_z}(v_\\parallel, |t_i|)$, Window Function, 1-KAW, $k_{\\parallel} \\rho_i = %4.3f$", ...
-                    kpardi);
-            case -495
-                first_line = sprintf("$C_{E_z}(v_\\parallel, |t_i|)$, No Window Function, 2-KAW, $(x, y, z) = (%3.2f, %3.2f, %3.2f), k_{\\parallel 1} \\rho_i = %4.3f, k_{\\parallel 2} \\rho_i = %4.3f$", ...
-                    xval, yval, zval, kpardi(1), kpardi(2));
-            case -4951
-                first_line = sprintf("$C_{E_z}(v_\\parallel, |t_i|)$, Window Function, 2-KAW, $k_{\\parallel 1} \\rho_i = %4.3f, k_{\\parallel 2} \\rho_i = %4.3f$", ...
-                    kpardi(1), kpardi(2));
-        end
-
-        second_line = sprintf("RSR = %3.2f, $\\delta \\phi = %3.2f \\pi, n_{v_z} = %.0f, t_i = (%.0f, %.0f, %3.2f)T, t_f = (%.0f, %4.3f, %4.3f)T$", ...
-            em_eps, delta_phi/pi, nvz, ...
-            ti_values(1)/waveT, ti_values(end)/waveT, (ti_values(2)-ti_values(1))/waveT, ...
-            tf_values(1)/waveT, tf_values(end-1)/waveT, (tf_values(2)-tf_values(1))/waveT);
-
-        title({[first_line], ...
-            [second_line]},'Interpreter','latex', ...
-            'FontName','TimesNewRoman', ...
-            'FontSize',20, ...
-            'FontWeight','bold');
-        
-        xlabel('$v_\parallel/v_{ti}$','Interpreter','latex', ...
-            'FontName','TimesNewRoman', ...
-            'FontSize',24, ...
-            'FontWeight','bold');
-        
-        ylabel('$|t_i|/T$','Interpreter','latex', ...
-            'FontName','TimesNewRoman', ...
-            'FontSize',24, ...
-            'FontWeight','bold');
-        
-        colormap(bluewhitered);
-        if save_plot
-            if output_reversal_time
-            figure_name = sprintf("./plots_iSH/iSHLDV132_%s_LabelReversalTime", time_suffix);
-            else
-            figure_name = sprintf("./plots_iSH/iSHLDV132_%s", time_suffix);
-            end
-            print(h10, figure_name, '-dpng', '-r150');  % 150 dpi resolution
-        end
-
-end
-
-
-function zero_crossings = find_zero_crossings(t_multiples, avg_cez_1D, interval)
-    zero_crossings = [];
-    
-    % Check if an interval is provided
-    if nargin == 3
-        mask = (t_multiples >= interval(1)) & (t_multiples <= interval(2));
-        t_multiples = t_multiples(mask);
-        avg_cez_1D = avg_cez_1D(mask);
-    end
-    
-    % Loop through the avg_cez_1D values to find where sign changes occur
-    for i = 1:length(avg_cez_1D)-1
-        if sign(avg_cez_1D(i)) ~= sign(avg_cez_1D(i+1))
-            % Linear interpolation to find a more accurate zero-crossing
-            t1 = t_multiples(i);
-            t2 = t_multiples(i+1);
-            C1 = avg_cez_1D(i);
-            C2 = avg_cez_1D(i+1);
-            
-            % Calculate the zero crossing using interpolation
-            t_zero = t1 + (0 - C1) * (t2 - t1) / (C2 - C1);
-            
-            % Add the zero-crossing point to the result
-            zero_crossings = [zero_crossings; t_zero];
-        end
-    end
-end
