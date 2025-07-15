@@ -4,6 +4,7 @@
 % electric field used in LM
 % So seriously what are the quantities I need to check?
 % I think I need to check all the quantities...
+% Wait, I don't need to check all parameters, some of them depends on field_choice
 % To reproduce figures in the paper, choose plotting_option = 2
 
 close all
@@ -36,14 +37,42 @@ logdyn = 6;
 plot_2panels = false;
 vertical_layout = false;
 
-[q_local, m_local, mime_local, tite_local, bi_local, ~, ~, field_choice_local, ~, ~, t_init_local, delta_phi_local, kpardi] = set_params;
+[q_local, m_local, mime_local, tite_local, ~, ~, vtic_local, field_choice_local, em_eps_local, ~, t_init_local, delta_phi_local, kvalue_local] = set_params;
 
-if field_choice_local == field_choice && delta_phi == delta_phi_local && t_init == t_init_local
+params_from_mat = struct( ...
+    'q', q, ...
+    'm', m, ...
+    'mime', mime, ...
+    'tite', tite, ...
+    'vtic', vtic, ...
+    'field_choice', field_choice, ...
+    'em_eps', em_eps, ...
+    't_init', t_init, ...
+    'delta_phi', delta_phi ...
+);
+
+params_local = struct( ...
+    'q', q_local, ...
+    'm', m_local, ...
+    'mime', mime_local, ...
+    'tite', tite_local, ...
+    'vtic', vtic_local, ...
+    'field_choice', field_choice_local, ...
+    'em_eps', em_eps_local, ...
+    't_init', t_init_local, ...
+    'delta_phi', delta_phi_local ...
+);
+
+
+if isequal(params_from_mat, params_local)
     disp("Correct local field.");
 else
     disp("Wrong local field. Please press Ctrl+C.");
+    disp("Differences:");
+    show_params_differences(params_from_mat, params_local);
     pause;
 end
+
 
 if t_final(end) / waveT > 1.2
     chosen_tf_slices = [1, 10, 40, 70];
@@ -293,9 +322,9 @@ if plot_circs
     % radii = linspace(0.5, 2, 5); % Define a range of radii for the family of circles
     radii = [0.5, 1, 1.5, 2, 2.5, 3, 3.5];
     nR = length(radii);
-    center_x = 2. * pi / waveT / kpardi;           % x-coordinate of circle centers
-    n_pos1_mode = (2. * pi / waveT - 1.) / kpardi;
-    n_neg1_mode = (2. * pi / waveT + 1.) / kpardi;
+    center_x = 2. * pi / waveT / kvalue_local;           % x-coordinate of circle centers
+    n_pos1_mode = (2. * pi / waveT - 1.) / kvalue_local;
+    n_neg1_mode = (2. * pi / waveT + 1.) / kvalue_local;
     
     x_cirs = zeros(nR);
     y_cirs = zeros(nR);
@@ -307,12 +336,12 @@ if plot_circs
         end
     end
 else
-    center_x1 = 2. * pi / waveT / kpardi(1);           % x-coordinate of circle centers
-    n_pos1_mode1 = (2. * pi / waveT - 1.) / kpardi(1);
-    n_neg1_mode1 = (2. * pi / waveT + 1.) / kpardi(1);
-    center_x2 = 2. * pi / waveT / kpardi(2);           % x-coordinate of circle centers
-    n_pos1_mode2 = (2. * pi / waveT - 1.) / kpardi(2);
-    n_neg1_mode2 = (2. * pi / waveT + 1.) / kpardi(2);
+    center_x1 = 2. * pi / waveT / kvalue_local(1);           % x-coordinate of circle centers
+    n_pos1_mode1 = (2. * pi / waveT - 1.) / kvalue_local(1);
+    n_neg1_mode1 = (2. * pi / waveT + 1.) / kvalue_local(1);
+    center_x2 = 2. * pi / waveT / kvalue_local(2);           % x-coordinate of circle centers
+    n_pos1_mode2 = (2. * pi / waveT - 1.) / kvalue_local(2);
+    n_neg1_mode2 = (2. * pi / waveT + 1.) / kvalue_local(2);
 end
 
 switch plotting_option
@@ -460,10 +489,10 @@ end
         % Add a super title
         if field_choice == -653 || field_choice == -6531
             params_line = sprintf("$\\mathbf{r} = (%3.2f, %3.2f, %3.2f), RSR = %3.2f, \\delta \\phi = %3.2f \\pi, k_{\\parallel, 1} \\rho_i = %4.3f, k_{\\parallel, 2} \\rho_i = %4.3f, t_i = %1.1d T, t_f = (%1.1d, %4.3f T; %4.3f T), (n_{v_x}, n_{v_y}, n_{v_z}) = (%1.1d, %1.1d, %1.1d)$", ...
-                xval, yval, zval, em_eps, delta_phi/pi, kpardi(1), kpardi(2), t_init/waveT, t_final(1), t_final(end-1)/waveT, dt_final/waveT, nvx, nvy, nvz);
+                xval, yval, zval, em_eps, delta_phi/pi, kvalue_local(1), kvalue_local(2), t_init/waveT, t_final(1), t_final(end-1)/waveT, dt_final/waveT, nvx, nvy, nvz);
         else
             params_line = sprintf("$\\beta_i = %1.1f, RSR = %3.2f, k_{\\parallel} \\rho_i = %4.3f, t_i = %1.1d T, t_f = (%1.1d, %4.3f T; %4.3f T), (n_{v_x}, n_{v_y}, n_{v_z}) = (%1.1d, %1.1d, %1.1d)$", ...
-                bi, em_eps, kpardi, t_init/waveT, t_final(1), t_final(end-1)/waveT, dt_final/waveT, nvx, nvy, nvz);
+                bi, em_eps, kvalue_local, t_init/waveT, t_final(1), t_final(end-1)/waveT, dt_final/waveT, nvx, nvy, nvz);
         end
 
         if keep_anno
@@ -785,10 +814,10 @@ end
         % Add a super title
         if field_choice == -653 || field_choice == -6531
             params_line = sprintf("$\\mathbf{r} = (%3.2f, %3.2f, %3.2f), RSR = %3.2f, \\delta \\phi = %3.2f \\pi, k_{\\parallel, 1} \\rho_i = %4.3f, k_{\\parallel, 2} \\rho_i = %4.3f, t_i = %1.1d T, t_f = (%1.1d, %1.1d T; %4.3f T), (n_{v_x}, n_{v_y}, n_{v_z}) = (%1.1d, %1.1d, %1.1d)$", ...
-                xval, yval, zval, em_eps, delta_phi/pi, kpardi(1), kpardi(2), t_init/waveT, t_final(1), t_final(end)/waveT, dt_final/waveT, nvx, nvy, nvz);
+                xval, yval, zval, em_eps, delta_phi/pi, kvalue_local(1), kvalue_local(2), t_init/waveT, t_final(1), t_final(end)/waveT, dt_final/waveT, nvx, nvy, nvz);
         else
             params_line = sprintf("$\\beta_i = %1.1f, RSR = %3.2f, k_{\\parallel} \\rho_i = %4.3f, t_i = %1.1d T, t_f = (%1.1d, %1.1d T; %4.3f T), (n_{v_x}, n_{v_y}, n_{v_z}) = (%1.1d, %1.1d, %1.1d)$", ...
-                bi, em_eps, kpardi, t_init/waveT, t_final(1), t_final(end)/waveT, dt_final/waveT, nvx, nvy, nvz);
+                bi, em_eps, kvalue_local, t_init/waveT, t_final(1), t_final(end)/waveT, dt_final/waveT, nvx, nvy, nvz);
         end
         
         sgtitle("iCD Signature Overview"  + newline + params_line, ...
@@ -1088,4 +1117,19 @@ function format_subplot(xlabel_text, ylabel_text, title_text)
     xlabel(xlabel_text, 'Interpreter', 'latex', 'FontName', 'TimesNewRoman', 'FontSize', 24, 'FontWeight', 'bold');
     ylabel(ylabel_text, 'Interpreter', 'latex', 'FontName', 'TimesNewRoman', 'FontSize', 24, 'FontWeight', 'bold');
     title(title_text, 'Interpreter', 'latex', 'FontName', 'TimesNewRoman', 'FontSize', 24, 'FontWeight', 'bold');
+end
+
+
+function show_params_differences(s1, s2)
+    params = fieldnames(s1);
+    for i = 1:numel(params)
+        param_name = params{i};
+        param1 = s1.(param_name);
+        param2 = s2.(param_name);
+        if ~isequal(param1, param2)
+            fprintf("Parameter '%s' differs: \n", param_name);
+            disp([' From mat data: ', mat2str(param1)]);
+            disp([' Local: ', mat2str(param2)]);
+        end
+    end
 end
