@@ -14,10 +14,10 @@ layout_format = 2; % if 1, plot using subplot; if 2, plot using tilelayout
 plot_2panels = false;
 vertical_layout = false;
 
-load("./data_iSH/iSHCDV21_20250524_185834.mat");
+load("../lmfpc_matlab/data/iSHCDV21_20241117_185132.mat");
 % load("~/Desktop/iSHCDV21_20250614_160053.mat");
 
-[~, ~, ~, ~, bi, ~, ~, field_choice_local, ~, ~, t_init_local, ~, delta_phi_local, kpardi] = set_params;
+[~, ~, ~, ~, bi, ~, ~, field_choice_local, ~, ~, t_init_local, delta_phi_local, kpardi] = set_params;
 
 if field_choice_local == field_choice && delta_phi == delta_phi_local && t_init == t_init_local
     disp("Correct local field.");
@@ -452,9 +452,9 @@ end
         
         if save_figure
             if plot_2panels
-                figure_filename = sprintf('./plots_iSH/iSHCDV21_%s_LF22', time_suffix);
+                figure_filename = sprintf('./iSHCDV21_%s_LF22', time_suffix);
             else
-                figure_filename = sprintf('./plots_iSH/iSHCDV21_%s_LF2', time_suffix);
+                figure_filename = sprintf('./iSHCDV21_%s_LF2', time_suffix);
             end
             % Match the figure size (convert pixels to inches, or set directly)
             fig_width = 18;   % in inches 18
@@ -775,7 +775,7 @@ end
                 'Interpreter', 'latex', 'FontSize', 16);
         
         if save_figure
-            figure_filename = sprintf('./plots_iSH/iSHCDV21_%s.png', time_suffix);
+            figure_filename = sprintf('./iSHCDV21_%s.png', time_suffix);
             print(h10, figure_filename, '-dpng', '-r150');  % 150 dpi resolution
         end
 
