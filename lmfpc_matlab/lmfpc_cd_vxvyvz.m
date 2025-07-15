@@ -48,9 +48,9 @@ nx = length(xval);
 
 vlength = 4.;
 % Compute max and min ends of velocity space axes
-dvx = 2. * vlength / 39.;
-dvy = 2. * vlength / 39.;
-dvz = 2. * vlength / 39.;
+dvx = 2. * vlength / 3.;
+dvy = 2. * vlength / 3.;
+dvz = 2. * vlength / 3.;
 
 % Set up (vx, vy, vz) grid
 vx_values = (-vlength:dvx:vlength)
