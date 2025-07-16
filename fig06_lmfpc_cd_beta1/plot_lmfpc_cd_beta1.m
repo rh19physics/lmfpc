@@ -16,7 +16,7 @@ plotting_option = 2; % if 1, plot using subplot; if 2, plot using tilelayout
 % if 0 or negative numbers, plot whatever you like
 % -1: plot it in 3D
 
-figure_number = 3;
+figure_number = 1;
 
 switch(figure_number)
     case 1
@@ -97,6 +97,7 @@ else
 end
 
 % =============== Extra Calcultions =================
+disp("Start calculation...");
 for it_final = 1:nt_final
     for ix = 1:nx
         E0 = elecfield(t_final(it_final), [xval(ix), yval(ix), zval(ix)]);    
@@ -339,6 +340,8 @@ else
     n_neg1_mode2 = (2. * pi / waveT + 1.) / kvalue_local(2);
 end
 
+disp("Calculation finished. Start plotting...");
+
 switch plotting_option
     case 2 % Use tilelayout
         scrsz = get(0, "ScreenSize");
@@ -350,7 +353,7 @@ switch plotting_option
             t = tiledlayout(4, 1);
         else
             % hLF2 = figure;
-            hLF2 = figure('Position', [0 0 scrsz(3) 0.25*scrsz(3)]);
+            hLF2 = figure('Position', [0 0 scrsz(3) 0.25*scrsz(3)], "Visible", "off");
             % hLF2 = figure('Position', [0 0 1920 0.25*1920]);
             t = tiledlayout(1, 4);
         end
@@ -494,6 +497,8 @@ end
             sgtitle(params_line, 'Interpreter', 'latex', 'FontSize', 15);
         end
         
+        disp("Plotting finished. Start saving figures...");
+
         if save_figure
             if plot_2panels
                 figure_filename = sprintf('./iSHCDV21_%s_LF22', time_suffix);
@@ -524,320 +529,7 @@ end
             print(hLF2, pdfname, '-dpdf', '-vector');
         end
 
-    case 1 % Use subplot
-        h10 = figure('Position', [1, 1, 1500, 1500], 'Visible','on', 'Theme', 'Light');
-        
-        ax1 = subplot(3, 3, 1);
-        % Plot tavg_cex_VxVy
-        tmpf(:,:) = squeeze(tavg_cex_VxVy);
-        [~, h1] = contourf(VX, VY, transpose(tmpf), 50);
-        hold on;
-        % xline(1.135, 'LineStyle','--', 'LineWidth', 3);
-        % xline(-1.135, 'LineStyle','--', 'LineWidth', 3);
-        
-        set(h1,'edgecolor','none');
-        colorbar('FontSize',16,'FontName','TimesNewRoman');
-        
-        % xlim([vzmin - dv / 2, vzmax + dv / 2]);
-        % ylim([min(vx_values) - dv / 2, max(vx_values) + dv / 2]);
-        
-        % Sets the colormap limits such that the center of the color bar is 0
-        cL = caxis;  
-        caxis(ax1, [-max(abs(cL)) max(abs(cL))]); 
-        
-        daspect([1 1 1]);
-        
-        format_subplot('$v_x/v_{ti}$', '$v_y/v_{ti}$', '$C_{E_x}(v_x, v_y)$');
-        colormap(ax1, bluewhitered);
-        
-        % =========================================
-        ax2 = subplot(3, 3, 2);
-        % Plot tavg_cey_VxVy
-        tmpf(:,:) = squeeze(tavg_cey_VxVy);
-        [~, h2] = contourf(VX, VY, transpose(tmpf), 50);
-        hold on;
-        % xline(1.135, 'LineStyle','--', 'LineWidth', 3);
-        % xline(-1.135, 'LineStyle','--', 'LineWidth', 3);
-        
-        set(h2,'edgecolor','none');
-        colorbar('FontSize',16,'FontName','TimesNewRoman');
-        
-        % xlim([vzmin - dv / 2, vzmax + dv / 2]);
-        % ylim([min(vx_values) - dv / 2, max(vx_values) + dv / 2]);
-        
-        % Sets the colormap limits such that the center of the color bar is 0
-        cL = caxis;  
-        caxis(ax2, [-max(abs(cL)) max(abs(cL))]); 
-        
-        daspect([1 1 1]);
-        format_subplot('$v_x/v_{ti}$', '$v_y/v_{ti}$', '$C_{E_y}(v_x, v_y)$');
-        
-        colormap(ax2, bluewhitered);
-        %======================================
-        ax3 = subplot(3, 3, 3);
-        % Plot tavg_cex_VxVy
-        % plot_f = squeeze(tavg_cex_VxVy) + squeeze(tavg_cey_VxVy);
-        plot_f = squeeze(tavg_ceperp_VxVy);
-        [~, h3] = contourf(VX, VY, transpose(plot_f), 50);
-        hold on;
-        % xline(1.135, 'LineStyle','--', 'LineWidth', 3);
-        % xline(-1.135, 'LineStyle','--', 'LineWidth', 3);
-        
-        set(h3,'edgecolor','none');
-        colorbar('FontSize',16,'FontName','TimesNewRoman');
-        
-        % xlim([vzmin - dv / 2, vzmax + dv / 2]);
-        % ylim([min(vx_values) - dv / 2, max(vx_values) + dv / 2]);
-        
-        % Sets the colormap limits such that the center of the color bar is 0
-        cL = caxis;  
-        caxis(ax3, [-max(abs(cL)) max(abs(cL))]); 
-        
-        daspect([1 1 1]);
-        format_subplot('$v_x/v_{ti}$', '$v_y/v_{ti}$', '$C_{E_\perp}(v_x, v_y)$');
-        colormap(ax3, bluewhitered);
-        
-        %======================================
-        ax4 = subplot(3, 3, 4);
-        % Plot ceperpV2_VxVy
-        tmpf = squeeze(tavg_ceperpV2_VxVy);
-        [~, h4] = contourf(VX, VY, transpose(tmpf), 50);
-        hold on;
-        % xline(1.135, 'LineStyle','--', 'LineWidth', 3);
-        % xline(-1.135, 'LineStyle','--', 'LineWidth', 3);
-        
-        set(h4,'edgecolor','none');
-        colorbar('FontSize',16,'FontName','TimesNewRoman');
-        
-        % xlim([vzmin - dv / 2, vzmax + dv / 2]);
-        % ylim([min(vx_values) - dv / 2, max(vx_values) + dv / 2]);
-        
-        % Sets the colormap limits such that the center of the color bar is 0
-        cL = caxis;  
-        caxis(ax4, [-max(abs(cL)) max(abs(cL))]); 
-        
-        daspect([1 1 1]);
-        format_subplot('$v_x/v_{ti}$', '$v_y/v_{ti}$', '$C_{E_\perp}^{(v^2)}(v_x, v_y)$');
-        colormap(ax4, bluewhitered);
-        
-        %======================================
-        ax5 = subplot(3, 3, 5);
-        if nvz == 1
-            % continue
-            tmpf = squeeze(tavg_ceperp_VperpVz);
-            plot(vperp_unique, tmpf, 'LineWidth', 3);
-            hold on;
-            xline(1, 'LineStyle',':', 'LineWidth', 2);
-            format_subplot('$v_\perp/v_{ti}$', '$C_{E_\perp}$', '1D $C_{E_\perp}(v_\perp)$ Plot');
-            vz_slice_label = sprintf("$v_z = %3.2f$", vz_values);
-            text(0.7, 0.85, vz_slice_label, 'FontSize', 16,'Interpreter','latex','FontWeight','bold', 'Color','k', 'Units', 'normalized');
-            ylim([- max(abs(tmpf)), max(abs(tmpf))]);
-        else
-            % Plot ceperpV2_VxVy
-            tmpf = squeeze(tavg_ceperp_VperpVz);
-            [~, h4] = contourf(VZ, VPERP, tmpf, 50);
-            hold on;
-            if plot_circs
-                for iR = 1:nR
-                    plot(x_cirs(iR, :), y_cirs(iR, :), 'LineStyle','-', 'LineWidth', 1, 'Color','#6aa84f');
-                end
-            end
-            if field_choice == -653 || field_choice == -6531
-                xline(n_pos1_mode1, 'LineStyle','--', 'LineWidth', 2);
-                xline(center_x1, 'LineStyle',':', 'LineWidth', 2);
-                xline(n_pos1_mode2, 'LineStyle','--', 'LineWidth', 2);
-                xline(center_x2, 'LineStyle',':', 'LineWidth', 2);
-                yline(1, 'LineStyle',':', 'LineWidth', 2);
-            else        
-                xline(n_pos1_mode, 'LineStyle','--', 'LineWidth', 2);
-                xline(center_x, 'LineStyle',':', 'LineWidth', 2);
-                xline(n_neg1_mode, 'LineStyle','--', 'LineWidth', 2);
-                yline(1, 'LineStyle',':', 'LineWidth', 2);
-            end
-            
-            set(h4,'edgecolor','none');
-            colorbar('FontSize',16,'FontName','TimesNewRoman');
-            
-            % xlim([-3,3]);
-            % ylim([min(vx_values) - dv / 2, max(vx_values) + dv / 2]);
-            
-            % Sets the colormap limits such that the center of the color bar is 0
-            cL = caxis;  
-            caxis(ax5, [-max(abs(cL)) max(abs(cL))]); 
-            
-            daspect([1 1 1]);
-            format_subplot('$v_\parallel/v_{ti}$', '$v_\perp/v_{ti}$', '$C_{E_\perp}(v_\parallel, v_\perp)$');
-            colormap(ax5, bluewhitered);
-        end
-        % =========================================
-        ax6 = subplot(3, 3, 6);
-        % Plot f_VxVy at the 1st time slices
-        tmpf = squeeze(f_VxVy);
-        
-        
-        if plot_logf
-            tmpf = log10(tmpf);
-            lgmax=max(tmpf,[],'all');
-            tmpf(tmpf< lgmax-logdyn)=lgmax-logdyn;
-        end
-        
-        [~, h3] = contourf(VX, VY, transpose(tmpf(:, :, chosen_tf_slices(1))), 50);
-        hold on;
-        
-        set(h3,'edgecolor','none');
-        colorbar('FontSize',16,'FontName','TimesNewRoman');
-        
-        % xlim([vzmin - dv / 2, vzmax + dv / 2]);
-        % ylim([min(vx_values) - dv / 2, max(vx_values) + dv / 2]);
-        
-        if plot_logf
-            colormap(ax6, plasma);
-            title_label = sprintf("$\\log_{10} f(v_x, v_y)$ at $t_f = $ %3.2f T", t_final(chosen_tf_slices(1))/waveT);
-        else
-            % Sets the colormap limits such that the center of the color bar is 0
-            cL = caxis;  
-            caxis(ax6, [0, max(abs(cL))]);
-            % colormap
-            colormap(ax6, bluewhitered);
-            title_label = sprintf("$f(v_x, v_y)$ at $t_f = $ %3.2f T", t_final(chosen_tf_slices(1))/waveT);
-        end
-        
-        daspect(ax6, [1 1 1]);
-        grid on;
-        
-        format_subplot('$v_x/v_{ti}$', '$v_y/v_{ti}$', title_label);
-        
-        % =========================================
-        ax7 = subplot(3, 3, 7);
-        % Plot f_VxVy at the 1st time slices
-        tmpf = squeeze(f_VxVy);
-        
-        
-        if plot_logf
-            tmpf = log10(tmpf);
-            lgmax=max(tmpf,[],'all');
-            tmpf(tmpf< lgmax-logdyn)=lgmax-logdyn;
-        end
-        
-        [~, h3] = contourf(VX, VY, transpose(tmpf(:, :, chosen_tf_slices(2))), 50);
-        hold on;
-        
-        set(h3,'edgecolor','none');
-        colorbar('FontSize',16,'FontName','TimesNewRoman');
-        
-        % xlim([vzmin - dv / 2, vzmax + dv / 2]);
-        % ylim([min(vx_values) - dv / 2, max(vx_values) + dv / 2]);
-        
-        if plot_logf
-            colormap(ax7, plasma);
-            title_label = sprintf("$\\log_{10} f(v_x, v_y)$ at $t_f = $ %3.2f T", t_final(chosen_tf_slices(2))/waveT);
-        else
-            % Sets the colormap limits such that the center of the color bar is 0
-            cL = caxis;  
-            caxis(ax7, [0, max(abs(cL))]);
-            % colormap
-            colormap(ax7, bluewhitered);
-            title_label = sprintf("$f(v_x, v_y)$ at $t_f = $ %3.2f T", t_final(chosen_tf_slices(2))/waveT);
-        end
-        
-        
-        daspect([1 1 1]);
-        grid on;
-        
-        format_subplot('$v_x/v_{ti}$', '$v_y/v_{ti}$', title_label);
-        % =========================================
-        ax8 = subplot(3, 3, 8);
-        % Plot f_VxVy at the 1st time slices
-        tmpf = squeeze(f_VxVy);
-        
-        
-        if plot_logf
-            tmpf = log10(tmpf);
-            lgmax=max(tmpf,[],'all');
-            tmpf(tmpf< lgmax-logdyn)=lgmax-logdyn;
-        end
-        
-        [~, h3] = contourf(VX, VY, transpose(tmpf(:, :, chosen_tf_slices(3))), 50);
-        hold on;
-        
-        set(h3,'edgecolor','none');
-        colorbar('FontSize',16,'FontName','TimesNewRoman');
-        
-        % xlim([vzmin - dv / 2, vzmax + dv / 2]);
-        % ylim([min(vx_values) - dv / 2, max(vx_values) + dv / 2]);
-        
-        if plot_logf
-            colormap(ax8, plasma);
-            title_label = sprintf("$\\log_{10} f(v_x, v_y)$ at $t_f = $ %3.2f T", t_final(chosen_tf_slices(3))/waveT);
-        else
-            % Sets the colormap limits such that the center of the color bar is 0
-            cL = caxis;  
-            caxis(ax8, [0, max(abs(cL))]);
-            % colormap
-            colormap(ax8, bluewhitered);
-            title_label = sprintf("$f(v_x, v_y)$ at $t_f = $ %3.2f T", t_final(chosen_tf_slices(3))/waveT);
-        end
-        
-        daspect([1 1 1]);
-        grid on;
-        
-        format_subplot('$v_x/v_{ti}$', '$v_y/v_{ti}$', title_label);
-        
-        % =========================================
-        ax9 = subplot(3, 3, 9);
-        % Plot f_VxVy at the 1st time slices
-        tmpf = squeeze(f_VxVy);
-        
-        if plot_logf
-            tmpf = log10(tmpf);
-            lgmax=max(tmpf,[],'all');
-            tmpf(tmpf< lgmax-logdyn)=lgmax-logdyn;
-        end
-        
-        [~, h3] = contourf(VX, VY, transpose(tmpf(:, :, chosen_tf_slices(4))), 50);
-        hold on;
-        
-        set(h3,'edgecolor','none');
-        colorbar('FontSize',16,'FontName','TimesNewRoman');
-        
-        % xlim([vzmin - dv / 2, vzmax + dv / 2]);
-        % ylim([min(vx_values) - dv / 2, max(vx_values) + dv / 2]);
-        
-        
-        if plot_logf
-            colormap(ax9, plasma);
-            title_label = sprintf("$\\log_{10}f(v_x, v_y)$ at $t_f = $ %3.2f T", t_final(chosen_tf_slices(4))/waveT);
-        else
-            % Sets the colormap limits such that the center of the color bar is 0
-            cL = caxis;  
-            caxis(ax9, [0, max(abs(cL))]);
-            % colormap
-            colormap(ax9, bluewhitered);
-            title_label = sprintf("$f(v_x, v_y)$ at $t_f = $ %3.2f T", t_final(chosen_tf_slices(4))/waveT);
-        end
-        
-        daspect([1 1 1]);
-        grid on;
-        
-        format_subplot('$v_x/v_{ti}$', '$v_y/v_{ti}$', title_label);
-        
-        
-        % Add a super title
-        if field_choice == -653 || field_choice == -6531
-            params_line = sprintf("$\\mathbf{r} = (%3.2f, %3.2f, %3.2f), RSR = %3.2f, \\delta \\phi = %3.2f \\pi, k_{\\parallel, 1} \\rho_i = %4.3f, k_{\\parallel, 2} \\rho_i = %4.3f, t_i = %1.1d T, t_f = (%1.1d, %1.1d T; %4.3f T), (n_{v_x}, n_{v_y}, n_{v_z}) = (%1.1d, %1.1d, %1.1d)$", ...
-                xval, yval, zval, em_eps, delta_phi/pi, kvalue_local(1), kvalue_local(2), t_init/waveT, t_final(1), t_final(end)/waveT, dt_final/waveT, nvx, nvy, nvz);
-        else
-            params_line = sprintf("$\\beta_i = %1.1f, RSR = %3.2f, k_{\\parallel} \\rho_i = %4.3f, t_i = %1.1d T, t_f = (%1.1d, %1.1d T; %4.3f T), (n_{v_x}, n_{v_y}, n_{v_z}) = (%1.1d, %1.1d, %1.1d)$", ...
-                bi, em_eps, kvalue_local, t_init/waveT, t_final(1), t_final(end)/waveT, dt_final/waveT, nvx, nvy, nvz);
-        end
-        
-        sgtitle("iCD Signature Overview"  + newline + params_line, ...
-                'Interpreter', 'latex', 'FontSize', 16);
-        
-        if save_figure
-            figure_filename = sprintf('./iSHCDV21_%s.png', time_suffix);
-            print(h10, figure_filename, '-dpng', '-r150');  % 150 dpi resolution
-        end
+        disp("Figure saved.");
 
     case 0 % testing case
         hLF0 = figure;
