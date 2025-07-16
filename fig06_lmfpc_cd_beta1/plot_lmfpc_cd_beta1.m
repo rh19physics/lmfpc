@@ -16,7 +16,7 @@ plotting_option = 2; % if 1, plot using subplot; if 2, plot using tilelayout
 % if 0 or negative numbers, plot whatever you like
 % -1: plot it in 3D
 
-figure_number = 1;
+figure_number = 3;
 
 switch(figure_number)
     case 1
@@ -37,6 +37,7 @@ logdyn = 6;
 plot_2panels = false;
 vertical_layout = false;
 
+% Cross-checking parameters from mat data and local parameters
 [q_local, m_local, mime_local, tite_local, ~, ~, vtic_local, field_choice_local, em_eps_local, ~, t_init_local, delta_phi_local, kvalue_local] = set_params;
 
 params_from_mat = struct( ...
@@ -73,19 +74,16 @@ else
     pause;
 end
 
-
 if t_final(end) / waveT > 1.2
     chosen_tf_slices = [1, 10, 40, 70];
 else
     chosen_tf_slices = [1, 10, 20, 30];
 end
 
-
-
-if field_choice == -653 || field_choice == -6531
-    plot_circs = false;
-else
+if size(kvalue_local, 2) == 1
     plot_circs = true;
+else
+    plot_circs = false;
 end
 
 % before 2024-11-28 I used xval for x, y, z
@@ -103,8 +101,7 @@ for it_final = 1:nt_final
     for ix = 1:nx
         E0 = elecfield(t_final(it_final), [xval(ix), yval(ix), zval(ix)]);    
         % ======================================================================
-        % Compute vx derivatives of f at each x and t
-        % df/dvx has been initialized
+        % Re-calculate vx derivatives of f at each x and t
         for k = 1:nvz
             for j = 1:nvy
                 for i = 2:nvx-1
@@ -116,8 +113,7 @@ for it_final = 1:nt_final
             end
         end    
         %======================================================================
-        % Compute vy derivatives of f at each x and t
-        % df/dvy has been initialized
+        % Re-calculate vy derivatives of f at each x and t
         for i = 1:nvx
             for k = 1:nvz
                 for j = 2:nvy-1
@@ -129,8 +125,7 @@ for it_final = 1:nt_final
             end
         end    
         %======================================================================
-        % Compute vz derivatives of f at each x and t
-        % df/dvz has been initialized
+        % Re-calculate vz derivatives of f at each x and t
         if nvz < 3
             % continue
         else
@@ -315,7 +310,7 @@ tavg_ceperp_VperpVz = sum(ceperp_VperpVz(:, :, :, 1:end-1), 4) * dt_final / (t_f
 [VZ_ZY, VY_ZY] = meshgrid(vz_values, vy_values);
 
 % =============== Plotting =================
-% Parameters
+% Plot semi-circles 
 if plot_circs
     th_cirs = linspace(0, pi, 100);   % Angular range for semicircles
     nth_cirs = length(th_cirs);
@@ -347,18 +342,18 @@ end
 switch plotting_option
     case 2 % Use tilelayout
         scrsz = get(0, "ScreenSize");
-    if plot_2panels
-        hLF2 = figure('Position', [1 scrsz(3) 0.6*scrsz(3) 0.25*scrsz(3)]);
-        t = tiledlayout(1, 2);
-    elseif vertical_layout
-        hLF2 = figure('Position', [1 scrsz(3) 0.5*scrsz(3) 2*scrsz(3)]);
-        t = tiledlayout(4, 1);
-    else
-        % hLF2 = figure;
-        hLF2 = figure('Position', [0 0 scrsz(3) 0.25*scrsz(3)]);
-        % hLF2 = figure('Position', [0 0 1920 0.25*1920]);
-        t = tiledlayout(1, 4);
-    end
+        if plot_2panels
+            hLF2 = figure('Position', [1 scrsz(3) 0.6*scrsz(3) 0.25*scrsz(3)]);
+            t = tiledlayout(1, 2);
+        elseif vertical_layout
+            hLF2 = figure('Position', [1 scrsz(3) 0.5*scrsz(3) 2*scrsz(3)]);
+            t = tiledlayout(4, 1);
+        else
+            % hLF2 = figure;
+            hLF2 = figure('Position', [0 0 scrsz(3) 0.25*scrsz(3)]);
+            % hLF2 = figure('Position', [0 0 1920 0.25*1920]);
+            t = tiledlayout(1, 4);
+        end
         
         
         % =========================================
@@ -404,7 +399,7 @@ switch plotting_option
         title_label = sprintf("$\\log_{10}f(v_\\parallel, v_\\perp)$ at $t_f = %4.3f T$", t_final(end-1)/waveT);
         
         % format_subplot('$v_\parallel/v_{ti}$', '$v_\perp/v_{ti}$', title_label);
-     format_subplot('$v_\parallel/v_{ti}$', '$v_\perp/v_{ti}$', "$\log_{10}f(v_\parallel, v_\perp)$");
+        format_subplot('$v_\parallel/v_{ti}$', '$v_\perp/v_{ti}$', "$\log_{10}f(v_\parallel, v_\perp)$");
         colormap(ax1, plasma);
 
         % =========================================
@@ -505,12 +500,28 @@ end
             else
                 figure_filename = sprintf('./iSHCDV21_%s_LF2', time_suffix);
             end
+            
+            if keep_anno
+                pngname = sprintf("./png/iSHCDV21_%s_anno.png", time_suffix);
+                epsname = sprintf("./eps/iSHCDV21_%s_anno.eps", time_suffix);
+                pdfname = sprintf("./pdf/iSHCDV21_%s_anno.pdf", time_suffix);       
+            else
+                pngname = sprintf("./png/iSHCDV21_%s.png", time_suffix);
+                epsname = sprintf("./eps/iSHCDV21_%s.eps", time_suffix);
+                pdfname = sprintf("./pdf/iSHCDV21_%s.pdf", time_suffix);
+            end
+            % Save png and eps
+            print(hLF2, pngname, '-dpng', '-r150');  % 150 dpi resolution
+            print(hLF2, epsname, '-painters','-depsc','-r150');
+
+            % Save pdf
+            % Set paper units to inches (or points, cm, etc.)
+            set(hLF2, 'PaperUnits', 'inches');
             % Match the figure size (convert pixels to inches, or set directly)
             fig_width = 18;   % in inches 18
             fig_height = 4.5;   % in inches 4.5
             set(hLF2, 'PaperSize', [fig_width fig_height], 'PaperPosition', [0 0 fig_width fig_height]);
-            print(hLF2, figure_filename, '-dpdf', '-vector');
-            print(hLF2, figure_filename, '-painters','-depsc','-r150');
+            print(hLF2, pdfname, '-dpdf', '-vector');
         end
 
     case 1 % Use subplot
@@ -1119,7 +1130,7 @@ function format_subplot(xlabel_text, ylabel_text, title_text)
     title(title_text, 'Interpreter', 'latex', 'FontName', 'TimesNewRoman', 'FontSize', 24, 'FontWeight', 'bold');
 end
 
-
+% Display differences between fieldnames of s1 and s2
 function show_params_differences(s1, s2)
     params = fieldnames(s1);
     for i = 1:numel(params)
