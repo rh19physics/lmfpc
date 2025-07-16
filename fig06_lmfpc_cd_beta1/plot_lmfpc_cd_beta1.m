@@ -28,11 +28,8 @@ switch(figure_number)
 end
 
 keep_anno = false;
-output_gif = false;
 plot_logf = true;
 logdyn = 6;
-plot_2panels = false;
-vertical_layout = false;
 
 % Cross-checking parameters from mat data and local parameters
 [q_local, m_local, mime_local, tite_local, ~, ~, vtic_local, field_choice_local, em_eps_local, ~, t_init_local, delta_phi_local, kvalue_local] = set_params;
@@ -340,23 +337,12 @@ end
 disp("Calculation finished. Start plotting...");
 
 scrsz = get(0, "ScreenSize");
-if plot_2panels
-    hLF2 = figure('Position', [1 scrsz(3) 0.6*scrsz(3) 0.25*scrsz(3)]);
-    t = tiledlayout(1, 2);
-elseif vertical_layout
-    hLF2 = figure('Position', [1 scrsz(3) 0.5*scrsz(3) 2*scrsz(3)]);
-    t = tiledlayout(4, 1);
-else
-    % hLF2 = figure;
-    hLF2 = figure('Position', [0 0 scrsz(3) 0.25*scrsz(3)], "Visible", "off");
-    % hLF2 = figure('Position', [0 0 1920 0.25*1920]);
-    t = tiledlayout(1, 4);
-end
-
+hLF2 = figure('Position', [0 0 scrsz(3) 0.25*scrsz(3)], "Visible", "off");
+t = tiledlayout(1, 4);
 
 % =========================================
 ax1 = nexttile;
-% Plot f_VperpVz at the 2nd time slices
+% Plot f_VperpVz at the last time slices
 tmpf = squeeze(f_VperpVz);
 if plot_logf
     tmpf = log10(tmpf);
@@ -435,8 +421,7 @@ ax2 = nexttile;
     colormap(ax2, bluewhitered);
 
 
-% =========================================
-if plot_2panels == false        
+% =========================================      
 ax3 = nexttile;
 tmpf = squeeze(tavg_cex_VxVy);
 [~, h3] = contourf(VX, VY, transpose(tmpf), 50);
@@ -478,7 +463,7 @@ daspect([1 1 1]);
 format_subplot('$v_x/v_{ti}$', '$v_y/v_{ti}$', '$C_{E_y}(v_x, v_y)$');
 
 colormap(ax4, bluewhitered);
-end
+
 % Add a super title
 if field_choice == -653 || field_choice == -6531
     params_line = sprintf("$\\mathbf{r} = (%3.2f, %3.2f, %3.2f), RSR = %3.2f, \\delta \\phi = %3.2f \\pi, k_{\\parallel, 1} \\rho_i = %4.3f, k_{\\parallel, 2} \\rho_i = %4.3f, t_i = %1.1d T, t_f = (%1.1d, %4.3f T; %4.3f T), (n_{v_x}, n_{v_y}, n_{v_z}) = (%1.1d, %1.1d, %1.1d)$", ...
@@ -495,12 +480,6 @@ end
 disp("Plotting finished. Start saving figures...");
 
 if save_figure
-    if plot_2panels
-        figure_filename = sprintf('./iSHCDV21_%s_LF22', time_suffix);
-    else
-        figure_filename = sprintf('./iSHCDV21_%s_LF2', time_suffix);
-    end
-    
     if keep_anno
         pngname = sprintf("./png/iSHCDV21_%s_anno.png", time_suffix);
         epsname = sprintf("./eps/iSHCDV21_%s_anno.eps", time_suffix);
