@@ -12,7 +12,7 @@ keep_anno = true;
 plot_logf = true;
 logdyn = 6;
 
-figure_number = 1;
+figure_number = 3;
 switch(figure_number)
     case 1 % Set field_choice to -63 in set_params.m
         anno_labels = ["$(a)$", "$(b)$", "$(c)$", "$(d)$"];
@@ -348,11 +348,11 @@ annotation('textbox', [0.54, 0.44, 0.5, 0.5], "Interpreter", "latex", "String", 
 annotation('textbox', [0.77, 0.44, 0.5, 0.5], "Interpreter", "latex", "String", anno_labels(4), 'FitBoxToText','on', "EdgeColor","none", "FontSize",28);
 
 if size(kvalue_local,2) == 2
-    param_line = sprintf("Field Choice: %d, $\\mathbf{r} = (%3.2f, %3.2f, %3.2f), RSR = %3.2f, \\delta \\phi = %3.2f \\pi, k_{\\parallel, 1} \\rho_i = %4.3f, k_{\\parallel, 2} \\rho_i = %4.3f, k_{\\perp} \\rho_i = 0.01, t_i = %1.1d T, t_f = (%1.1d, %4.3f T; %4.3f T), (n_{v_x}, n_{v_y}, n_{v_z}) = (%1.1d, %1.1d, %1.1d)$", ...
-        field_choice, xval, yval, zval, em_eps, delta_phi/pi, kvalue_local(1), kvalue_local(2), t_init/waveT, t_final(1), t_final(end-1)/waveT, dt_final/waveT, nvx, nvy, nvz);
+    param_line = sprintf("Field Choice: %d, $\\beta_i = %2.1f, \\mathbf{r} = (%3.2f, %3.2f, %3.2f), RSR = %3.2f, \\delta \\phi = %3.2f \\pi, k_{\\parallel, 1} \\rho_i = %4.3f, k_{\\parallel, 2} \\rho_i = %4.3f, k_{\\perp} \\rho_i = 0.01, t_i = %1.1d T, t_f = (%1.1d, %4.3f T; %4.3f T), (n_{v_x}, n_{v_y}, n_{v_z}) = (%1.1d, %1.1d, %1.1d)$", ...
+        field_choice, bi, xval, yval, zval, em_eps, delta_phi/pi, kvalue_local(1), kvalue_local(2), t_init/waveT, t_final(1), t_final(end-1)/waveT, dt_final/waveT, nvx, nvy, nvz);
 else
-    param_line = sprintf("Field Choice: %d, $\\mathbf{r} = (%3.2f, %3.2f, %3.2f), RSR = %3.2f, \\delta \\phi = %3.2f \\pi, k_{\\parallel} \\rho_i = %4.3f, k_{\\perp} \\rho_i = 0.01, t_i = %1.1d T, t_f = (%1.1d, %4.3f T; %4.3f T), (n_{v_x}, n_{v_y}, n_{v_z}) = (%1.1d, %1.1d, %1.1d)$", ...
-        field_choice, xval, yval, zval, em_eps, delta_phi/pi, kvalue_local, t_init/waveT, t_final(1), t_final(end-1)/waveT, dt_final/waveT, nvx, nvy, nvz);
+    param_line = sprintf("Field Choice: %d, $\\beta_i = %2.1f, \\mathbf{r} = (%3.2f, %3.2f, %3.2f), RSR = %3.2f, \\delta \\phi = %3.2f \\pi, k_{\\parallel} \\rho_i = %4.3f, k_{\\perp} \\rho_i = 0.01, t_i = %1.1d T, t_f = (%1.1d, %4.3f T; %4.3f T), (n_{v_x}, n_{v_y}, n_{v_z}) = (%1.1d, %1.1d, %1.1d)$", ...
+        field_choice, bi, xval, yval, zval, em_eps, delta_phi/pi, kvalue_local, t_init/waveT, t_final(1), t_final(end-1)/waveT, dt_final/waveT, nvx, nvy, nvz);
 end
 
 if keep_anno
