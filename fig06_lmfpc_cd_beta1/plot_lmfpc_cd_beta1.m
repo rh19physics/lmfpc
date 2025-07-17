@@ -1,4 +1,4 @@
-% This script reads iSHCDV21 data and re-calculate FPC quantities
+% This script reads iSHCDV21 data, re-calculate and plot FPC quantities
 % The FPC re-calculation process requires electric field. 
 % So it's important to cross check the local electric field and the
 % electric field used in LM
@@ -8,9 +8,11 @@ clear
 clc
 
 save_figure = true;
+keep_anno = true;
+plot_logf = true;
+logdyn = 6;
 
 figure_number = 3;
-
 switch(figure_number)
     case 1
         anno_labels = ["$(a)$", "$(b)$", "$(c)$", "$(d)$"];
@@ -23,9 +25,7 @@ switch(figure_number)
         load("../lmfpc_matlab/data/iSHCDV21_20241118_131107.mat");
 end
 
-keep_anno = true;
-plot_logf = true;
-logdyn = 6;
+
 
 % Cross-checking parameters from mat data and local parameters
 [q_local, m_local, mime_local, tite_local, ~, ~, vtic_local, field_choice_local, em_eps_local, ~, t_init_local, delta_phi_local, kvalue_local] = set_params;
@@ -55,7 +55,6 @@ params_local = struct( ...
 );
 
 disp("Start cross checking parameters...");
-
 if isequal(params_from_mat, params_local)
     disp("Correct local field.");
 else
@@ -269,6 +268,7 @@ for it_final = 1:nt_final
                 % Find indices where vperp matches vperp_unique(ivp)
                 matching_indices = find(abs(vperp_values - vperp_unique(ivp)) < 1e-6);
 
+                % transform ceperp
                 sum_value = 0;
                 for idx = 1:length(matching_indices)-1
                     [ii, jj] = ind2sub([nvx, nvy], matching_indices(idx));
@@ -332,8 +332,7 @@ hLF2 = figure('Position', [0 0 scrsz(3) 0.25*scrsz(3)], "Visible", "off");
 t = tiledlayout(1, 4);
 
 % =========================================
-ax1 = nexttile;
-% Plot f_VperpVz at the last time slices
+ax1 = nexttile; % Plot f_VperpVz at the last time slices
 tmpf = squeeze(f_VperpVz);
 if plot_logf
     tmpf = log10(tmpf);
@@ -357,7 +356,7 @@ else
 end
 
 if keep_anno
-    annotation('textbox', [0.07, 0.48, 0.5, 0.5], "Interpreter", "latex", "String", param_line, 'FitBoxToText','on', "EdgeColor","none", "FontSize",13);
+    annotation('textbox', [0.07, 0.48, 0.5, 0.5], "Interpreter", "latex", "String", param_line, 'FitBoxToText','on', "EdgeColor","none", "FontSize",14);
 end
 
 set(h1,'edgecolor','none');
@@ -385,47 +384,46 @@ daspect([1 1 1]);
 
 title_label = sprintf("$\\log_{10}f(v_\\parallel, v_\\perp)$ at $t_f = %4.3f T$", t_final(end-1)/waveT);
 
-% format_subplot('$v_\parallel/v_{ti}$', '$v_\perp/v_{ti}$', title_label);
 format_subplot('$v_\parallel/v_{ti}$', '$v_\perp/v_{ti}$', "$\log_{10}f(v_\parallel, v_\perp)$");
 colormap(ax1, plasma);
 
 % =========================================
-ax2 = nexttile;
-    tmpf = squeeze(tavg_ceperp_VperpVz);
-    [~, h2] = contourf(VZ, VPERP, tmpf, 50);
-    hold on;
-    if plot_circs
-        for iR = 1:nR
-            plot(x_cirs(iR, :), y_cirs(iR, :), 'LineStyle','-', 'LineWidth', 1, 'Color','#6aa84f');
-        end
+ax2 = nexttile; % Plot tavg_ceperp_VperpVz
+tmpf = squeeze(tavg_ceperp_VperpVz);
+[~, h2] = contourf(VZ, VPERP, tmpf, 50);
+hold on;
+if plot_circs
+    for iR = 1:nR
+        plot(x_cirs(iR, :), y_cirs(iR, :), 'LineStyle','-', 'LineWidth', 1, 'Color','#6aa84f');
     end
+end
 if size(kvalue_local, 2) == 2
-        xline(n_pos1_mode1, 'LineStyle','--', 'LineWidth', 2);
-        xline(center_x1, 'LineStyle',':', 'LineWidth', 2);
-        xline(n_pos1_mode2, 'LineStyle','--', 'LineWidth', 2);
-        xline(center_x2, 'LineStyle',':', 'LineWidth', 2);
-        yline(1, 'LineStyle',':', 'LineWidth', 2);
-    else        
-        xline(n_pos1_mode, 'LineStyle','--', 'LineWidth', 2);
-        xline(center_x, 'LineStyle',':', 'LineWidth', 2);
-        xline(n_neg1_mode, 'LineStyle','--', 'LineWidth', 2);
-        yline(1, 'LineStyle',':', 'LineWidth', 2);
-    end
+    xline(n_pos1_mode1, 'LineStyle','--', 'LineWidth', 2);
+    xline(center_x1, 'LineStyle',':', 'LineWidth', 2);
+    xline(n_pos1_mode2, 'LineStyle','--', 'LineWidth', 2);
+    xline(center_x2, 'LineStyle',':', 'LineWidth', 2);
+    yline(1, 'LineStyle',':', 'LineWidth', 2);
+else        
+    xline(n_pos1_mode, 'LineStyle','--', 'LineWidth', 2);
+    xline(center_x, 'LineStyle',':', 'LineWidth', 2);
+    xline(n_neg1_mode, 'LineStyle','--', 'LineWidth', 2);
+    yline(1, 'LineStyle',':', 'LineWidth', 2);
+end
     
-    set(h2,'edgecolor','none');
-    colorbar('FontSize', 20,'FontName','TimesNewRoman');
-    
-    % Sets the colormap limits such that the center of the color bar is 0
-    cL = caxis;  
-    caxis(ax2, [-max(abs(cL)) max(abs(cL))]); 
-    
-    daspect([1 1 1]);
-    format_subplot('$v_\parallel/v_{ti}$', '$v_\perp/v_{ti}$', '$C_{E_\perp}(v_\parallel, v_\perp)$');
-    colormap(ax2, bluewhitered);
+set(h2,'edgecolor','none');
+colorbar('FontSize', 20,'FontName','TimesNewRoman');
+
+% Sets the colormap limits such that the center of the color bar is 0
+cL = caxis;  
+caxis(ax2, [-max(abs(cL)) max(abs(cL))]); 
+
+daspect([1 1 1]);
+format_subplot('$v_\parallel/v_{ti}$', '$v_\perp/v_{ti}$', '$C_{E_\perp}(v_\parallel, v_\perp)$');
+colormap(ax2, bluewhitered);
 
 
 % =========================================      
-ax3 = nexttile;
+ax3 = nexttile; % Plot tavg_cex_VxVy
 tmpf = squeeze(tavg_cex_VxVy);
 [~, h3] = contourf(VX, VY, transpose(tmpf), 50);
 hold on;
@@ -443,18 +441,13 @@ format_subplot('$v_x/v_{ti}$', '$v_y/v_{ti}$', '$C_{E_x}(v_x, v_y)$');
 colormap(ax3, bluewhitered);
     
 % =========================================
-ax4 = nexttile;
+ax4 = nexttile; % Plot tavg_cey_VxVy
 tmpf = squeeze(tavg_cey_VxVy);
 [~, h4] = contourf(VX, VY, transpose(tmpf), 50);
 hold on;
-% xline(1.135, 'LineStyle','--', 'LineWidth', 3);
-% xline(-1.135, 'LineStyle','--', 'LineWidth', 3);
 
 set(h4,'edgecolor','none');
 colorbar('FontSize', 20,'FontName','TimesNewRoman');
-
-% xlim([vzmin - dv / 2, vzmax + dv / 2]);
-% ylim([min(vx_values) - dv / 2, max(vx_values) + dv / 2]);
 
 % Sets the colormap limits such that the center of the color bar is 0
 cL = caxis;  
