@@ -14,13 +14,13 @@ logdyn = 6;
 
 figure_number = 1;
 switch(figure_number)
-    case 1
+    case 1 % Set field_choice to -63 in set_params.m
         anno_labels = ["$(a)$", "$(b)$", "$(c)$", "$(d)$"];
         load("../lmfpc_matlab/data/iSHCDV21_20241117_185132.mat");
-    case 2
+    case 2 % Set field_choice to -65 in set_params.m
         anno_labels = ["$(e)$", "$(f)$", "$(g)$", "$(h)$"];
         load("../lmfpc_matlab/data/iSHCDV21_20241117_185002.mat");
-    case 3
+    case 3 % Set field_choice to -653 in set_params.m
         anno_labels = ["$(i)$", "$(j)$", "$(k)$", "$(l)$"];
         load("../lmfpc_matlab/data/iSHCDV21_20241118_131107.mat");
 end
