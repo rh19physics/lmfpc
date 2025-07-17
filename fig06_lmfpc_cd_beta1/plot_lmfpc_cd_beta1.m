@@ -2,10 +2,6 @@
 % The FPC re-calculation process requires electric field. 
 % So it's important to cross check the local electric field and the
 % electric field used in LM
-% So seriously what are the quantities I need to check?
-% I think I need to check all the quantities...
-% Wait, I don't need to check all parameters, some of them depends on field_choice
-% To reproduce figures in the paper, choose plotting_option = 2
 
 close all
 clear
@@ -13,7 +9,7 @@ clc
 
 save_figure = true;
 
-figure_number = 1;
+figure_number = 3;
 
 switch(figure_number)
     case 1
@@ -27,7 +23,7 @@ switch(figure_number)
         load("../lmfpc_matlab/data/iSHCDV21_20241118_131107.mat");
 end
 
-keep_anno = false;
+keep_anno = true;
 plot_logf = true;
 logdyn = 6;
 
@@ -58,6 +54,7 @@ params_local = struct( ...
     'delta_phi', delta_phi_local ...
 );
 
+disp("Start cross checking parameters...");
 
 if isequal(params_from_mat, params_local)
     disp("Correct local field.");
@@ -68,16 +65,10 @@ else
     pause;
 end
 
-if t_final(end) / waveT > 1.2
-    chosen_tf_slices = [1, 10, 40, 70];
-else
-    chosen_tf_slices = [1, 10, 20, 30];
-end
-
-if size(kvalue_local, 2) == 1
-    plot_circs = true;
-else
+if size(kvalue_local, 2) == 2
     plot_circs = false;
+else
+    plot_circs = true;
 end
 
 % before 2024-11-28 I used xval for x, y, z
@@ -346,8 +337,8 @@ ax1 = nexttile;
 tmpf = squeeze(f_VperpVz);
 if plot_logf
     tmpf = log10(tmpf);
-    lgmax=max(tmpf,[],'all');
-    tmpf(tmpf< lgmax-logdyn)=lgmax-logdyn;
+    lgmax = max(tmpf,[],'all');
+    tmpf(tmpf < lgmax - logdyn) = lgmax - logdyn;
 end
 
 [~, h1] = contourf(VZ, VPERP, tmpf(:, :, end-1), 50);
@@ -357,6 +348,18 @@ annotation('textbox', [0.28, 0.44, 0.5, 0.5], "Interpreter", "latex", "String", 
 annotation('textbox', [0.54, 0.44, 0.5, 0.5], "Interpreter", "latex", "String", anno_labels(3), 'FitBoxToText','on', "EdgeColor","none", "FontSize",28);
 annotation('textbox', [0.77, 0.44, 0.5, 0.5], "Interpreter", "latex", "String", anno_labels(4), 'FitBoxToText','on', "EdgeColor","none", "FontSize",28);
 
+if size(kvalue_local,2) == 2
+    param_line = sprintf("Field Choice: %d, $\\mathbf{r} = (%3.2f, %3.2f, %3.2f), RSR = %3.2f, \\delta \\phi = %3.2f \\pi, k_{\\parallel, 1} \\rho_i = %4.3f, k_{\\parallel, 2} \\rho_i = %4.3f, t_i = %1.1d T, t_f = (%1.1d, %4.3f T; %4.3f T), (n_{v_x}, n_{v_y}, n_{v_z}) = (%1.1d, %1.1d, %1.1d)$", ...
+        field_choice, xval, yval, zval, em_eps, delta_phi/pi, kvalue_local(1), kvalue_local(2), t_init/waveT, t_final(1), t_final(end-1)/waveT, dt_final/waveT, nvx, nvy, nvz);
+else
+    param_line = sprintf("Field Choice: %d, $\\mathbf{r} = (%3.2f, %3.2f, %3.2f), RSR = %3.2f, \\delta \\phi = %3.2f \\pi, k_{\\parallel} \\rho_i = %4.3f, t_i = %1.1d T, t_f = (%1.1d, %4.3f T; %4.3f T), (n_{v_x}, n_{v_y}, n_{v_z}) = (%1.1d, %1.1d, %1.1d)$", ...
+        field_choice, xval, yval, zval, em_eps, delta_phi/pi, kvalue_local, t_init/waveT, t_final(1), t_final(end-1)/waveT, dt_final/waveT, nvx, nvy, nvz);
+end
+
+if keep_anno
+    annotation('textbox', [0.07, 0.48, 0.5, 0.5], "Interpreter", "latex", "String", param_line, 'FitBoxToText','on', "EdgeColor","none", "FontSize",13);
+end
+
 set(h1,'edgecolor','none');
 colorbar('FontSize',20,'FontName','TimesNewRoman');
 if plot_circs
@@ -364,7 +367,7 @@ if plot_circs
         plot(x_cirs(iR, :), y_cirs(iR, :), 'LineStyle','-', 'LineWidth', 1, 'Color','#6aa84f');
     end
 end
-if field_choice == -653 || field_choice == -6531
+if size(kvalue_local, 2) == 2
     xline(n_pos1_mode1, 'LineStyle','--', 'LineWidth', 2);
     xline(center_x1, 'LineStyle',':', 'LineWidth', 2);
     xline(n_pos1_mode2, 'LineStyle','--', 'LineWidth', 2);
@@ -396,7 +399,7 @@ ax2 = nexttile;
             plot(x_cirs(iR, :), y_cirs(iR, :), 'LineStyle','-', 'LineWidth', 1, 'Color','#6aa84f');
         end
     end
-    if field_choice == -653 || field_choice == -6531
+if size(kvalue_local, 2) == 2
         xline(n_pos1_mode1, 'LineStyle','--', 'LineWidth', 2);
         xline(center_x1, 'LineStyle',':', 'LineWidth', 2);
         xline(n_pos1_mode2, 'LineStyle','--', 'LineWidth', 2);
@@ -426,8 +429,6 @@ ax3 = nexttile;
 tmpf = squeeze(tavg_cex_VxVy);
 [~, h3] = contourf(VX, VY, transpose(tmpf), 50);
 hold on;
-% xline(1.135, 'LineStyle','--', 'LineWidth', 3);
-% xline(-1.135, 'LineStyle','--', 'LineWidth', 3);
 
 set(h3,'edgecolor','none');
 colorbar('FontSize', 20,'FontName','TimesNewRoman');
@@ -463,19 +464,6 @@ daspect([1 1 1]);
 format_subplot('$v_x/v_{ti}$', '$v_y/v_{ti}$', '$C_{E_y}(v_x, v_y)$');
 
 colormap(ax4, bluewhitered);
-
-% Add a super title
-if field_choice == -653 || field_choice == -6531
-    params_line = sprintf("$\\mathbf{r} = (%3.2f, %3.2f, %3.2f), RSR = %3.2f, \\delta \\phi = %3.2f \\pi, k_{\\parallel, 1} \\rho_i = %4.3f, k_{\\parallel, 2} \\rho_i = %4.3f, t_i = %1.1d T, t_f = (%1.1d, %4.3f T; %4.3f T), (n_{v_x}, n_{v_y}, n_{v_z}) = (%1.1d, %1.1d, %1.1d)$", ...
-        xval, yval, zval, em_eps, delta_phi/pi, kvalue_local(1), kvalue_local(2), t_init/waveT, t_final(1), t_final(end-1)/waveT, dt_final/waveT, nvx, nvy, nvz);
-else
-    params_line = sprintf("$\\beta_i = %1.1f, RSR = %3.2f, k_{\\parallel} \\rho_i = %4.3f, t_i = %1.1d T, t_f = (%1.1d, %4.3f T; %4.3f T), (n_{v_x}, n_{v_y}, n_{v_z}) = (%1.1d, %1.1d, %1.1d)$", ...
-        bi, em_eps, kvalue_local, t_init/waveT, t_final(1), t_final(end-1)/waveT, dt_final/waveT, nvx, nvy, nvz);
-end
-
-if keep_anno
-    sgtitle(params_line, 'Interpreter', 'latex', 'FontSize', 15);
-end
 
 disp("Plotting finished. Start saving figures...");
 
