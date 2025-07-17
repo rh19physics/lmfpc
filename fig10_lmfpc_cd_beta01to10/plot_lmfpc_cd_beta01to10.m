@@ -14,18 +14,22 @@ logdyn = 6;
 
 figure_number = 1;
 switch(figure_number)
-    case 1
+    case 1 % Set field_choice = 
         anno_labels = ["$(a)$", "$(b)$", "$(c)$", "$(d)$"];
-        load("../lmfpc_matlab/data/iSHCDV21_20241117_185132.mat");
+        load("../lmfpc_matlab/data/iSHCDV21_20250101_113049.mat");
     case 2
         anno_labels = ["$(e)$", "$(f)$", "$(g)$", "$(h)$"];
-        load("../lmfpc_matlab/data/iSHCDV21_20241117_185002.mat");
+        load("../lmfpc_matlab/data/iSHCDV21_20250101_113157.mat");
     case 3
         anno_labels = ["$(i)$", "$(j)$", "$(k)$", "$(l)$"];
-        load("../lmfpc_matlab/data/iSHCDV21_20241118_131107.mat");
+        load("../lmfpc_matlab/data/iSHCDV21_20241117_185132.mat");
+    case 4
+        anno_labels = ["$(m)$", "$(n)$", "$(o)$", "$(p)$"];
+        load("../lmfpc_matlab/data/iSHCDV21_20250101_113245.mat");
+    case 5
+        anno_labels = ["$(q)$", "$(r)$", "$(s)$", "$(t)$"];
+        load("../lmfpc_matlab/data/iSHCDV21_20250101_113403.mat");
 end
-
-
 
 % Cross-checking parameters from mat data and local parameters
 [q_local, m_local, mime_local, tite_local, ~, ~, vtic_local, field_choice_local, em_eps_local, ~, t_init_local, delta_phi_local, kvalue_local] = set_params;
