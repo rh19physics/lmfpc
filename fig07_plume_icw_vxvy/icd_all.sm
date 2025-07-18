@@ -1,0 +1,247 @@
+#dev xterm
+dev postencap temp.ps
+ERASE
+
+#Set Limits 
+LWEIGHT 6
+NOTATION -1 2 -1  2
+LOCATION $($gx1 + 1500) $gx2 $gy1 $gy2
+EXPAND 1.501
+
+##################################################################
+#UPDATED FOR REVISED PLUME with yy,yz,zy,zz n=0 terms separated
+##################################################################
+
+# Plots of gamma/omega, Delta phi, Amplitudes of Eperp and ui_perp
+
+##################################################################
+# Comparison of different dissipation mechanisms from Vlasov-Maxwell
+#  linear dispersion relation (PLUME)
+##################################################################
+
+
+# VM Line from PLUME   ################################################
+
+#DATA "/Users/ghowes/codes/plume/revision_JAN2023/data/mmsic/icd1a_kz_kpar_10_10000.mode1"
+#DATA "icd1a_kz_kpar_10_10000.mode1"
+DATA "lmfpc_b1_kperp001_mime1836_kpar_10_10000.mode1"
+
+READ {kperp 1 kpar 2 betap 3 vtp 4 w 5 g 6 bxr 7 bxi 8 byr 9 byi 10 bzr 11 bzi 12 exr 13 exi 14 eyr 15 eyi 16 ezr 17 ezi 18 ux1r 19 ux1i 20  uy1r 21 uy1i 22 uz1r 23 uz1i 24  ux2r 25 ux2i 26  uy2r 27 uy2i 28 uz2r 29 uz2i 30 n1r 31 n1i 32 n2r 33 n2i 34 p1cd 42 tau2 55 }
+SET lgg=lg(abs(g)/abs(w))
+SET gw=abs(g)/abs(w)
+SET lgk=lg(kpar)
+SET eps=1.0E-16
+SET lgp1cd=lg(p1cd+eps)
+
+# ELECTRIC FIELDS###########################################
+# Calculate phase of Eperp2 (Ey) relative to Eperp1 (Ex)
+#   NOTE: Ex is real
+SET exmag=sqrt(exr*exr+exi*exi)
+SET eymag=sqrt(eyr*eyr+eyi*eyi)
+# PHASE ANGLE
+SET phiey=eyr*0.
+SET phiex=exr*0.
+
+do i=0,DIMEN(eyr)-1 {
+
+if (exr[$i] < 0.) {
+
+if (exi[$i] >= 0.) {
+SET phiex[$i]=atan(exi[$i]/exr[$i])+pi
+}else{
+SET phiex[$i]=atan(exi[$i]/exr[$i])-pi
+}
+} else{
+SET phiex[$i]=atan(exi[$i]/exr[$i])
+}
+
+
+if (eyr[$i] < 0.) {
+
+if (eyi[$i] >= 0.) {
+SET phiey[$i]=atan(eyi[$i]/eyr[$i])+pi
+}else{
+SET phiey[$i]=atan(eyi[$i]/eyr[$i])-pi
+}
+} else{
+SET phiey[$i]=atan(eyi[$i]/eyr[$i])
+}
+
+}
+#Divide by pi (to normalize to -1 < value < 1)
+SET phiex=phiex/pi
+SET phiey=phiey/pi
+
+# Amplitude Ratio
+SET emagrat=eymag/exmag
+
+# ION VELOCITIES==================================================
+# Calculate phase of uiy relative to uix 
+SET ux1mag=sqrt(ux1r*ux1r+ux1i*ux1i) /sqrt(betap)
+SET uy1mag=sqrt(uy1r*uy1r+uy1i*uy1i) /sqrt(betap)
+# PHASE ANGLE
+SET phiuy1=uy1r*0.
+SET phiux1=ux1r*0.
+
+do i=0,DIMEN(uy1r)-1 {
+
+if (ux1r[$i] < 0.) {
+
+if (ux1i[$i] >= 0.) {
+SET phiux1[$i]=atan(ux1i[$i]/ux1r[$i])+pi
+}else{
+SET phiux1[$i]=atan(ux1i[$i]/ux1r[$i])-pi
+}
+} else{
+SET phiux1[$i]=atan(ux1i[$i]/ux1r[$i])
+}
+
+if (uy1r[$i] < 0.) {
+
+if (uy1i[$i] >= 0.) {
+SET phiuy1[$i]=atan(uy1i[$i]/uy1r[$i])+pi
+}else{
+SET phiuy1[$i]=atan(uy1i[$i]/uy1r[$i])-pi
+}
+} else{
+SET phiuy1[$i]=atan(uy1i[$i]/uy1r[$i])
+}
+
+}
+#Divide by pi (to normalize to -1 < value < 1)
+SET phiux1=phiux1/pi
+SET phiuy1=phiuy1/pi
+
+# Amplitude Ratio
+SET uimagrat=ux1mag/uy1mag
+
+#Compute relative phases for x and y between ui and E
+SET delphix=phiux1-phiex
+SET delphiy=phiuy1-phiey
+
+
+# Damping Rate###########################################
+WINDOW 1 40 1 28:40
+LIMITS -2 1 -2 0.3
+TICKSIZE -1 0 -1 0
+
+LTYPE 0
+CTYPE black
+LWEIGHT 6
+CONNECT lgk lgg
+CTYPE green
+LTYPE 2
+CONNECT lgk lgp1cd
+
+
+# AXES===================================================
+EXPAND 1.2
+TICKSIZE -1 0 -1 0
+CTYPE black
+SET xl = {-10 10}
+SET yl = { 0 0 }
+LWEIGHT 2
+LTYPE 1
+CONNECT xl yl
+SET yl = { -1 -1 }
+LTYPE 2
+CONNECT xl yl
+
+LWEIGHT 3
+CTYPE black
+EXPAND 1.6
+BOX 0 2
+#XLABEL k_\parallel\rho_i 
+YLABEL -\gamma/\omega
+
+# Relative Phases###########################################
+WINDOW 1 40 1 14:32
+LIMITS -2 1 -0.6 0.
+TICKSIZE -1 0 0 0
+
+CTYPE black
+LTYPE 2
+LWEIGHT 4
+SET xp={-2 1}
+SET yp={-0.5 -0.5}
+CONNECT xp yp
+
+LWEIGHT 6
+CTYPE red
+LTYPE 1
+CONNECT lgk delphix
+CTYPE green
+LTYPE 2
+CONNECT lgk delphiy
+
+CTYPE black
+LTYPE 0
+LWEIGHT 2
+GRID 1
+
+
+LWEIGHT 3
+CTYPE black
+EXPAND 1.6
+BOX 0 2
+#XLABEL k_\parallel\rho_i 
+CTYPE red
+YLABEL (\phi_{ux}-\phi_{Ex})/\pi,"            "
+CTYPE green 
+YLABEL               (\phi_{uy}-\phi_{Ey})/\pi
+
+# Magnitudes###########################################
+WINDOW 1 40 1 1:18
+LIMITS -2 1 0. 2
+TICKSIZE -1 0 0 0
+
+LWEIGHT 6
+
+CTYPE red
+LTYPE 1
+CONNECT lgk exmag
+LTYPE 2
+CONNECT lgk ux1mag
+
+CTYPE green
+LTYPE 1
+CONNECT lgk eymag
+LTYPE 2
+CONNECT lgk uy1mag
+
+
+# Plasma Parameter Labels======================
+LWEIGHT 3
+CTYPE black
+DEFINE kx (SPRINTF('%3.2f',kperp[0]))
+DEFINE tite (SPRINTF('%3.1f',tau2[0]))
+DEFINE betai (SPRINTF('%3.2f',betap[0]))
+RELOCATE 0. 1.6
+LABEL \beta_i=$betai
+RELOCATE 0. 1.2
+LABEL T_i/T_e=$tite
+RELOCATE 0. 0.5
+LABEL k_\perp\rho_i=$kx 
+
+
+LWEIGHT 3
+CTYPE black
+EXPAND 1.6
+BOX
+XLABEL k_\parallel\rho_i 
+CTYPE black 
+CTYPE red
+YLABEL |E|,"       "
+CTYPE green
+YLABEL      |u_{i}|/v_A
+
+hardcopy
+
+# OUTPUT DATA TO A FILE
+do  i=0,DIMEN(eyr)-1 { 
+WRITE icd1a_iCD.dat $(kpar[$i]) $(gw[$i]) $(exmag[$i]) $(phiex[$i])  $(eymag[$i]) $(phiey[$i]) $(ux1mag[$i]) $(phiux1[$i])  $(uy1mag[$i]) $(phiuy1[$i]-phiey[$i]) 
+}
+QUIT
+
+
+
