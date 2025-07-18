@@ -1,5 +1,7 @@
 *.mat
 *.asv
+*.tar
+*.zip
 .DS_Store
 z_testings/
 lmfpc_matlab/data/
