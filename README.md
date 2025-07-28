@@ -6,3 +6,5 @@ Huang, Rui, & Howes, Gregory G. (2025). **Unveiling the Velocity-Space Signature
 
 To run scripts, download the tar file from [this link](https://drive.google.com/drive/folders/1smK0csS2ZNrHJrGj4R0BKjS7ZzNlhx_Y?usp=drive_link), untar it to get necessary `.mat` data files, and put all of them into `/lmfpc_matlab/data/`
 
+Zenodo badge:
+[![DOI](https://zenodo.org/badge/1016995125.svg)](https://doi.org/10.5281/zenodo.16541374)
