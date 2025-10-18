@@ -7,12 +7,12 @@ close all
 clear
 clc
 
-save_figure = true;
-keep_anno = true;
+save_figure_local = true;
+keep_anno = false;
 plot_logf = true;
 logdyn = 6;
 
-figure_number = 1;
+figure_number = 5;
 switch(figure_number)
     case 1 % Set field_choice to -6301 in set_params.m
         anno_labels = ["$(a)$", "$(b)$", "$(c)$", "$(d)$"];
@@ -396,6 +396,15 @@ ax2 = nexttile; % Plot tavg_ceperp_VperpVz
 tmpf = squeeze(tavg_ceperp_VperpVz);
 [~, h2] = contourf(VZ, VPERP, tmpf, 50);
 hold on;
+
+beta_label = sprintf("$\\beta_i = %2.1f$", bi);
+
+text(-3.8, 1.1, beta_label,'Interpreter','latex', ...
+    'FontName','TimesNewRoman','FontSize',24, ...
+    'FontWeight','bold', 'HorizontalAlignment','left', ...
+    'VerticalAlignment', 'top', ...
+    'Rotation',90);
+
 if plot_circs
     for iR = 1:nR
         plot(x_cirs(iR, :), y_cirs(iR, :), 'LineStyle','-', 'LineWidth', 1, 'Color','#6aa84f');
@@ -462,9 +471,8 @@ format_subplot('$v_x/v_{ti}$', '$v_y/v_{ti}$', '$C_{E_y}(v_x, v_y)$');
 
 colormap(ax4, bluewhitered);
 
-disp("Plotting finished. Start saving figures...");
-
-if save_figure
+if save_figure_local
+    disp("Plotting finished. Start saving figures...");
     if keep_anno
         pngname = sprintf("./png/iSHCDV21_%s_anno.png", time_suffix);
         epsname = sprintf("./eps/iSHCDV21_%s_anno.eps", time_suffix);
@@ -486,9 +494,12 @@ if save_figure
     fig_height = 4.5;   % in inches 4.5
     set(hLF2, 'PaperSize', [fig_width fig_height], 'PaperPosition', [0 0 fig_width fig_height]);
     print(hLF2, pdfname, '-dpdf', '-vector');
+    disp("Figures saved.");
+else
+    disp("Figures not saved.");
 end
 
-disp("Figure saved.");
+
 
 
 % ================ functions ================

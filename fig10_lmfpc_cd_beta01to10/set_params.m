@@ -18,7 +18,7 @@ vtic = 1.e-4;
 % RSR
 em_eps = 0.02;
 
-field_choice = -6301;
+field_choice = -6310;
 
 delta_phi = 0. * pi / 4.;
 
