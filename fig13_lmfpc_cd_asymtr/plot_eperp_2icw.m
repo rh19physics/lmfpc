@@ -37,6 +37,7 @@ hold on;
 xline([-2.9, -1.4, 0.1, 1.6], 'Color', 'k', 'LineStyle', '--', 'LineWidth', 2);
 format_subplot('$z$', '$\frac{E_\perp}{v_{ti} B_0 / c}$');
 xlim([-(2.*pi/kvalue(2)), 2.*pi/kvalue(2)]);
+text(-10, 0.039, "$(q)$", "Interpreter","latex", 'VerticalAlignment','top', 'FontSize',20);
 
 if save_fig
     pngname = './png/Eperp2ICW.png';
