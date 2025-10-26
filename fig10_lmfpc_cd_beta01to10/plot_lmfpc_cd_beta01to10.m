@@ -8,7 +8,7 @@ clear
 clc
 
 save_figure_local = true;
-keep_anno = false;
+keep_anno = true;
 plot_logf = true;
 logdyn = 6;
 
@@ -278,7 +278,7 @@ for it_final = 1:nt_final
                     [ii, jj] = ind2sub([nvx, nvy], matching_indices(idx));
                     sum_value = sum_value + ceperp(ix, jj, ii, ivz, it_final);
                 end
-                ceperp_VperpVz(ix, ivp, ivz, it_final) = sum_value / length(matching_indices);
+                ceperp_VperpVz(ix, ivp, ivz, it_final) = 2. * pi * vperp_unique(ivp) * sum_value / length(matching_indices);
 
                 % transform f
                 sum_value = 0; 
@@ -286,7 +286,7 @@ for it_final = 1:nt_final
                     [ii, jj] = ind2sub([nvx, nvy], matching_indices(idx));
                     sum_value = sum_value + f(ix, jj, ii, ivz, it_final);
                 end
-                f_VperpVz(ix, ivp, ivz, it_final) = sum_value/length(matching_indices);
+                f_VperpVz(ix, ivp, ivz, it_final) = 2. * pi * vperp_unique(ivp) * sum_value/length(matching_indices);
             end
         end
     end

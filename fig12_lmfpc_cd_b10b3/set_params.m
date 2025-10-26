@@ -18,7 +18,7 @@ vtic = 1.e-4;
 % RSR
 em_eps = 0.02;
 
-field_choice = -633;
+field_choice = -6310;
 
 delta_phi = 0. * pi / 4.;
 
@@ -91,7 +91,7 @@ switch field_choice
 end
 
 % Physical Initial Time
-t_init = - 4. * waveT;
+t_init = - 2. * waveT;
 
 % Plasma beta_i and beta_e
 be = bi * mime / tite;
