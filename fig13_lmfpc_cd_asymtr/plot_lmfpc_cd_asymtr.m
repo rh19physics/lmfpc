@@ -7,7 +7,7 @@ close all
 clear
 clc
 
-save_figure = true;
+save_figure_local = true;
 keep_anno = false;
 plot_logf = true;
 logdyn = 6;
@@ -460,9 +460,10 @@ format_subplot('$v_x/v_{ti}$', '$v_y/v_{ti}$', '$C_{E_y}(v_x, v_y)$');
 
 colormap(ax4, bluewhitered);
 
-disp("Plotting finished. Start saving figures...");
+disp("Plotting finished.");
 
-if save_figure
+if save_figure_local
+    disp("Start saving figures...");
     if keep_anno
         pngname = sprintf("./png/iSHCDV21_%s_anno.png", time_suffix);
         epsname = sprintf("./eps/iSHCDV21_%s_anno.eps", time_suffix);
@@ -484,9 +485,10 @@ if save_figure
     fig_height = 4.5;   % in inches 4.5
     set(hLF2, 'PaperSize', [fig_width fig_height], 'PaperPosition', [0 0 fig_width fig_height]);
     print(hLF2, pdfname, '-dpdf', '-vector');
+    disp("Figure saved.");
+else
+    disp("Figures not saved.");
 end
-
-disp("Figure saved.");
 
 
 % ================ functions ================
