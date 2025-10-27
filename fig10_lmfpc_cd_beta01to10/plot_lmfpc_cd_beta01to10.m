@@ -8,7 +8,7 @@ clear
 clc
 
 save_figure_local = true;
-keep_anno = true;
+keep_anno = false;
 plot_logf = true;
 logdyn = 6;
 
