@@ -8,11 +8,11 @@ clear
 clc
 
 save_figure_local = true;
-keep_anno = true;
+keep_anno = false;
 plot_logf = true;
 logdyn = 6;
 
-figure_number = 1;
+figure_number = 3;
 switch(figure_number)
     case 1 % Set field_choice to -63 in set_params.m
         anno_labels = ["$(a)$", "$(b)$", "$(c)$", "$(d)$"];
