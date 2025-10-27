@@ -413,6 +413,7 @@ cL = caxis;
 caxis(ax2, [-max(abs(cL)) max(abs(cL))]); 
 
 daspect([1 1 1]);
+yticks([1 2 3 4 5]);
 format_subplot('$v_\parallel/v_{ti}$', '$v_\perp/v_{ti}$', '$C_{E_\perp}(v_\parallel, v_\perp)$');
 colormap(ax2, bluewhitered);
 
