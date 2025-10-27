@@ -12,7 +12,7 @@ keep_anno = true;
 plot_logf = true;
 logdyn = 6;
 
-figure_number = 1;
+figure_number = 2;
 switch(figure_number)
     case 1 % Set field_choice to -6310 and t_init to -2*waveT in set_params.m
         anno_labels = ["$(a)$", "$(b)$", "$(c)$", "$(d)$"];
