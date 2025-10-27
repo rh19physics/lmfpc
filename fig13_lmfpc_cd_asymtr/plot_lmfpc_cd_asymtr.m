@@ -12,7 +12,7 @@ keep_anno = true;
 plot_logf = true;
 logdyn = 6;
 
-figure_number = 1;
+figure_number = 4;
 switch(figure_number)
 % For all cases, set field_choice to -653 and t_init = - 4*waveT in set_params.m
     case 1 
