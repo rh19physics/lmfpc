@@ -292,8 +292,8 @@ tavg_ceperp_VperpVz = sum(ceperp_VperpVz(:, :, :, 1:end-1), 4) * dt_final / (t_f
 % tavg_f_VperpVz = sum(f_VperpVz(:, :, :, 1:end-1), 4) * dt_final / (t_final(end) - t_final(1));
 
 [VZ, VPERP] = meshgrid(vz_values, vperp_unique);
-[VZ_ZX, VX_ZX] = meshgrid(vz_values, vx_values);
-[VZ_ZY, VY_ZY] = meshgrid(vz_values, vy_values);
+% [VZ_ZX, VX_ZX] = meshgrid(vz_values, vx_values);
+% [VZ_ZY, VY_ZY] = meshgrid(vz_values, vy_values);
 
 % =============== Plotting =================
 % Plot semi-circles 
