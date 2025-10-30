@@ -20,16 +20,17 @@ data = dlmread('icd1a_iCD.dat');
 
 % icd1a_iCD.dat is generated using the .sm script from plume raw output
 % columns in icd1a_iCD.dat are:
-% kpar: plume raw output kpar
-% gw: normalized total damping rate |\gamma|/|\omega|
-% exmag: magnitude of the raw output Ex
-% phiex: phase of Ex
-% eymag: magnitude of the raw output Ey
-% phiey: phase of Ey
-% ux1mag: magnitude of the re-normalized (from vA to vTi) Ux
-% phiux1: phase of Ux
-% uy1mag: magnitude of the re-normalized (from vA to vTi) Uy
-% phiuy1 - phiey: phase difference between Uy and Ey
+
+% 1 kpar: plume raw output kpar
+% 2 gw: normalized total damping rate |\gamma|/|\omega|
+% 3 exmag: magnitude of the raw output Ex
+% 4 phiex: phase of Ex
+% 5 eymag: magnitude of the raw output Ey
+% 6 phiey: phase of Ey
+% 7 ux1mag: magnitude of the re-normalized (from vA to vTi) Ux
+% 8 phiux1: phase of Ux
+% 9 uy1mag: magnitude of the re-normalized (from vA to vTi) Uy
+% 10 phiuy1 - phiey: phase difference between Uy and Ey
 
 kzval = [0.4 0.5 0.525 0.6 0.7 0.8 0.9 1.0 1.2 1.4 1.6 1.8 2.0]
 % ikzall = [322 341 345 357 370 382 392 401 417 430 442 452 462]
